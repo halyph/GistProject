@@ -54,7 +54,7 @@ public class App {
 			System.out.println("	login = " + login);
 			System.out.println("	pass = " + new String(password));
 		} else if (command.toLowerCase().equals("creategist")) {
-			app.createNewGists();
+			app.createNewGist();
 		} else if (command.toLowerCase().equals("loadgists")) {
 			app.loadGists();
 		} else if (command.toLowerCase().equals("showgists")) {
@@ -76,7 +76,7 @@ public class App {
 	}
 
 	public void loadFiles() throws IOException {
-		app.cheatPrepare();
+		//app.cheatPrepare();
 
 		System.out.print("  Type gist id: ");
 		String gid = scanner.nextLine();
@@ -104,7 +104,7 @@ public class App {
 	}
 
 	public void uploadFiles() throws IOException {
-		app.cheatPrepare();
+		//app.cheatPrepare();
 
 		System.out.print("  Type gist id: ");
 		String gistId = scanner.nextLine();
@@ -117,11 +117,20 @@ public class App {
 					GistFile gf = gistFiles.get(s);
 					String filename = login + "\\" + gist.getId() + "\\"
 							+ gf.getFilename();
-					gf.setContent(readFileAsString(filename));
-					GistService service = new GistService();
-					service.getClient().setCredentials(login,
-							new String(password));
-					service.updateGist(gist);
+					String con = app.readFileAsString(filename);
+					if (con != null) {
+						gf.setContent(con);
+						GistService service = new GistService();
+						service.getClient().setCredentials(login,
+								new String(password));
+						service.updateGist(gist);
+						System.out
+								.println("file: " + filename + " was updated");
+					} else {
+						System.out.println("local file: " + filename
+								+ " not exist");
+					}
+
 				}
 			}
 		}
@@ -190,7 +199,12 @@ public class App {
 	public void loadGists() throws IOException {
 		GistService service = new GistService();
 		service.getClient().setCredentials(login, new String(password));
-		gists = service.getGists(login);
+		if (service.getClient() != null) {
+			gists = service.getGists(login);
+		} else {
+			System.out.println("wrong login or password");
+		}
+
 	}
 
 	public void showGists() {
@@ -207,40 +221,61 @@ public class App {
 		}
 	}
 
-	public void createNewGists() throws IOException {
+	public void createNewGist() throws IOException {
 		GistFile file = new GistFile();
-		file.setContent("System.out.println(\"Hello World\");");
-		Gist gist = new Gist();
-		gist.setDescription("Prints a string to standard out");
-		gist.setFiles(Collections.singletonMap("Hello.java", file));
-		GistService service = new GistService();
-		service.getClient().setCredentials(login, new String(password));
-		gist = service.createGist(gist);
-	}
+		String [] a = app.getContent();
+		String content = a[1];
+		if(content != null){
+			file.setContent(content);
+			Gist gist = new Gist();
+			gist.setDescription(getString("type gist description"));
+			gist.setFiles(Collections.singletonMap(a[0], file));
+			GistService service = new GistService();
+			service.getClient().setCredentials(login, new String(password));
+			gist = service.createGist(gist);			
+		}
 
+	}
+	
+	public String getString(String message){
+		System.out.print(" " + message);
+		return scanner.nextLine();
+	}
+	
+
+	public String [] getContent() throws IOException{
+		System.out.print("  Type filepath: ");
+		String filepath = scanner.nextLine();
+		String [] a = {filepath, readFileAsString(filepath)};
+		return  a;
+	}
+	
 	public void cheatPrepare() throws IOException {
 		loadLP();
 		loadGists();
 		showGists();
-
 	}
 
-	private static String readFileAsString(String filePath)
-			throws java.io.IOException {
-		StringBuffer fileData = new StringBuffer(1000);
-		BufferedReader reader = new BufferedReader(new FileReader(filePath));
-		char[] buf = new char[1024];
-		int numRead = 0;
-		while ((numRead = reader.read(buf)) != -1) {
-			String readData = String.valueOf(buf, 0, numRead);
-			fileData.append(readData);
-			buf = new char[1024];
+	private String readFileAsString(String filePath) throws java.io.IOException {
+		if (new File(filePath).exists()) {
+			StringBuffer fileData = new StringBuffer(1000);
+			FileReader fr = new FileReader(filePath);
+			BufferedReader reader = new BufferedReader(fr);
+			char[] buf = new char[1024];
+			int numRead = 0;
+			while ((numRead = reader.read(buf)) != -1) {
+				String readData = String.valueOf(buf, 0, numRead);
+				fileData.append(readData);
+				buf = new char[1024];
+			}
+			reader.close();
+			return fileData.toString();
 		}
-		reader.close();
-		return fileData.toString();
+		return null;
+
 	}
 
-	private static void printSeparator() {
+	private void printSeparator() {
 		for (int i = 0; i < 50; i++) {
 			System.out.print("-");
 		}
