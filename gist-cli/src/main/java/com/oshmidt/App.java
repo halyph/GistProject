@@ -11,8 +11,10 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -31,13 +33,16 @@ public class App {
 	private static App app;
 
 	private static List<Gist> gists;
+	
+	private static ResourceBundle resource;
 
 	public static void main(String[] args) throws IOException {
+		resource = ResourceBundle.getBundle("strings", Locale.getDefault());
 		app = new App();
 		scanner = new Scanner(System.in);
 		while (true) {
 			System.out.println("");
-			System.out.print("Type command: ");
+			System.out.print(resource.getString("typeCommand"));
 			String command = scanner.nextLine();
 
 			app.doCommand(command);
@@ -48,11 +53,11 @@ public class App {
 		if (command.equals("login")) {
 			app.getLogin();
 		} else if (command.equals("exit")) {
-			System.out.println("bye bye");
+			System.out.println(resource.getString("leaveMessage"));
 			System.exit(0);
 		} else if (command.equals("status")) {
-			System.out.println("	login = " + login);
-			System.out.println("	pass = " + new String(password));
+			System.out.println(resource.getString("login:") + login);
+			System.out.println(resource.getString("pass:") + new String(password));
 		} else if (command.toLowerCase().equals("creategist")) {
 			app.createNewGist();
 		} else if (command.toLowerCase().equals("loadgists")) {
@@ -70,15 +75,15 @@ public class App {
 		} else if (command.equals("") || command.equals("help")) {
 			app.showHelp();
 		} else {
-			System.out.println("Unknown command, type help");
-			System.out.println("");
+			System.out.println(resource.getString("unknownCommand"));
+			System.out.println();
 		}
 	}
 
 	public void loadFiles() throws IOException {
 		//app.cheatPrepare();
 
-		System.out.print("  Type gist id: ");
+		System.out.print(resource.getString("typeGistID"));
 		String gid = scanner.nextLine();
 
 		for (Gist gist : gists) {
@@ -106,7 +111,7 @@ public class App {
 	public void uploadFiles() throws IOException {
 		//app.cheatPrepare();
 
-		System.out.print("  Type gist id: ");
+		System.out.print(resource.getString("typeGistID"));
 		String gistId = scanner.nextLine();
 
 		for (Gist gist : gists) {
@@ -124,11 +129,10 @@ public class App {
 						service.getClient().setCredentials(login,
 								new String(password));
 						service.updateGist(gist);
-						System.out
-								.println("file: " + filename + " was updated");
+						System.out.println(resource.getString("file") + filename + resource.getString("wasUpdated"));
 					} else {
-						System.out.println("local file: " + filename
-								+ " not exist");
+						System.out.println(resource.getString("localFile:") + filename
+								+ resource.getString("notExist"));
 					}
 
 				}
@@ -175,25 +179,25 @@ public class App {
 	}
 
 	public void getLogin() {
-		System.out.print("Type Login: ");
+		System.out.print(resource.getString("typeLogin"));
 		login = scanner.nextLine();
 		getPassword();
 	}
 
-	public static void getPassword() {
-		System.out.print("Type Password: ");
+	public void getPassword() {
+		System.out.print(resource.getString("typePassword"));
 		password = scanner.nextLine().toCharArray();
 	}
 
 	public void showHelp() {
-		System.out.println("Suppoted commands:");
-		System.out.println(" status - show current user");
-		System.out.println(" login - set new login/password");
-		System.out.println(" saveLP - saving login/passwort to property file");
-		System.out.println(" loadLP - loading login/password to property file");
-		System.out.println(" loadGists - loading gists for current user");
-		System.out.println(" showGists - show loaded gists");
-		System.out.println(" exit");
+		System.out.println(resource.getString("commandList"));
+		System.out.println(resource.getString("statusDescription"));
+		System.out.println(resource.getString("loginDescription"));
+		System.out.println(resource.getString("uploadLoginPasswordDescription"));
+		System.out.println(resource.getString("loadLoginPasswordDescription"));
+		System.out.println(resource.getString("loadGistsDescription"));
+		System.out.println(resource.getString("showGistsDescription"));
+		System.out.println(resource.getString("exit"));
 	}
 
 	public void loadGists() throws IOException {
@@ -202,7 +206,7 @@ public class App {
 		if (service.getClient() != null) {
 			gists = service.getGists(login);
 		} else {
-			System.out.println("wrong login or password");
+			System.out.println(resource.getString("wrongLoginOrPassword"));
 		}
 
 	}
@@ -212,12 +216,12 @@ public class App {
 			printSeparator();
 			for (Gist gist : gists) {
 				System.out.println();
-				System.out.println("Gist ID = " + gist.getId());
-				System.out.println("  Description: " + gist.getDescription());
+				System.out.println(resource.getString("gistID") + gist.getId());
+				System.out.println(resource.getString("description:") + gist.getDescription());
 			}
 			printSeparator();
 		} else {
-			System.out.println("there is no loaded gists");
+			System.out.println(resource.getString("noLoadedGists"));
 		}
 	}
 
@@ -228,7 +232,7 @@ public class App {
 		if(content != null){
 			file.setContent(content);
 			Gist gist = new Gist();
-			gist.setDescription(getString("type gist description"));
+			gist.setDescription(getString(resource.getString("typeGistDescription")));
 			gist.setFiles(Collections.singletonMap(a[0], file));
 			GistService service = new GistService();
 			service.getClient().setCredentials(login, new String(password));
@@ -244,7 +248,7 @@ public class App {
 	
 
 	public String [] getContent() throws IOException{
-		System.out.print("  Type filepath: ");
+		System.out.print(resource.getString("typeFilepath"));
 		String filepath = scanner.nextLine();
 		String [] a = {filepath, readFileAsString(filepath)};
 		return  a;
