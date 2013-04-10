@@ -1,1 +1,1 @@
-GistProject 
+For build inside gist-cli folder type:"Ant", it create runnable jar file. For run it type "java -jar-cli.jar"

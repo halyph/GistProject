@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" default="build_jar">
+
+	<target name="resolve" description="Resolve and Retrieve with ivy">
+		<ivy:resolve />
+		<ivy:cachepath pathid="default.classpath" />
+		<ivy:retrieve sync="true" type="jar" />
+	</target>
+
+	<target name="compile" depends="resolve" description="Compile">
+		<mkdir dir="build/classes" />
+		<javac srcdir="src" destdir="build/classes">
+			<classpath refid="default.classpath" />
+		</javac>
+		<copy todir="build\classes\" overwrite="false">
+		  <fileset dir="src\main\java">
+		  	 <include name="**/*" />
+		     <exclude name="*java" />
+		  </fileset>
+		</copy>
+	</target>
+
+	<target name="build_jar" depends="compile">
+		<jar destfile="gist-cli.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="com.oshmidt.App" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="build/classes" />
+		</jar>
+	</target>
+
+
+</project>

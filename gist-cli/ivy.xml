@@ -1,0 +1,8 @@
+<ivy-module version="2.0">
+  <info organisation="org.oshmidt" module="gist-cli"/>
+  <dependencies>
+    <dependency org="org.eclipse.mylyn.github" name="org.eclipse.egit.github.core" rev="2.1.3"/>
+    <dependency org="junit" name="junit" rev="3.8.1"/>
+  </dependencies>
+</ivy-module>
+
