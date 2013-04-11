@@ -21,7 +21,7 @@ import org.eclipse.egit.github.core.service.GistService;
 public class GistManager {
 
 	private List<Gist> gists;
-	
+
 	private static final String TYPE_GIST_ID = "typeGistID";
 
 	private static Scanner scanner = new Scanner(System.in);
@@ -79,7 +79,7 @@ public class GistManager {
 						gf.setContent(con);
 						GistService service = new GistService();
 						service.getClient().setCredentials(user.getLogin(),
-								new String(user.getPassword()));
+								user.getPassword());
 						service.updateGist(gist);
 						System.out.println(Messages.getString("fileWasUpdated",
 								filename));
@@ -95,8 +95,7 @@ public class GistManager {
 
 	public void loadGists(User user) throws IOException {
 		GistService service = new GistService();
-		service.getClient().setCredentials(user.getLogin(),
-				new String(user.getPassword()));
+		service.getClient().setCredentials(user.getLogin(), user.getPassword());
 		if (service.getClient() != null) {
 			gists = service.getGists(user.getLogin());
 		} else {
@@ -158,7 +157,7 @@ public class GistManager {
 			gist.setFiles(Collections.singletonMap(a[0], file));
 			GistService service = new GistService();
 			service.getClient().setCredentials(user.getLogin(),
-					new String(user.getPassword()));
+					user.getPassword());
 			gist = service.createGist(gist);
 		}
 	}

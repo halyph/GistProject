@@ -13,16 +13,16 @@ public class App {
 	private User user = new User();
 
 	private static App app;
-	
+
 	private static final String CONFIG_FILE_NAME = "config.properties";
 
 	private static GistManager gistManager = new GistManager();
-	
+
 	public static void main(String[] args) throws IOException {
 		// resource = ResourceBundle.getBundle("strings", Locale.getDefault());
 		app = new App();
-		//user = new User();
-	
+		// user = new User();
+
 		while (true) {
 			System.out.println("");
 			System.out.print(Messages.getString("typeCommand"));
@@ -38,10 +38,8 @@ public class App {
 			System.out.println(Messages.getString("leaveMessage"));
 			System.exit(0);
 		} else if (command.equals("status")) {
-			System.out.println(Messages.getString("login")
-					+ user.getLogin());
-			System.out.println(Messages.getString("pass")
-					+ new String(user.getPassword()));
+			System.out.println(Messages.getString("login") + user.getLogin());
+			System.out.println(Messages.getString("pass") + user.getPassword());
 		} else if (command.toLowerCase().equals("creategist")) {
 			gistManager.createNewGist(user);
 		} else if (command.toLowerCase().equals("loadgists")) {
@@ -71,8 +69,7 @@ public class App {
 				prop.setProperty("login", user.getLogin());
 			}
 			if (user.getPassword() != null) {
-				prop.setProperty("password",
-						new String(user.getPassword()));
+				prop.setProperty("password", user.getPassword());
 			}
 			prop.store(new FileOutputStream(CONFIG_FILE_NAME), null);
 		} catch (IOException ex) {
@@ -85,7 +82,7 @@ public class App {
 		try {
 			prop.load(new FileInputStream(CONFIG_FILE_NAME));
 			user.setLogin(prop.getProperty("login"));
-			user.setPassword(prop.getProperty("password").toCharArray());
+			user.setPassword(prop.getProperty("password"));
 
 			System.out.println(user.getLogin());
 			System.out.println(user.getPassword());
@@ -103,14 +100,15 @@ public class App {
 
 	public void readPassword() {
 		System.out.print(Messages.getString("typePassword"));
-		user.setPassword(scanner.nextLine().toCharArray());
+		user.setPassword(scanner.nextLine());
 	}
 
 	public void showHelp() {
 		System.out.println(Messages.getString("commandList"));
 		System.out.println(Messages.getString("statusDescription"));
 		System.out.println(Messages.getString("loginDescription"));
-		System.out.println(Messages.getString("uploadLoginPasswordDescription"));
+		System.out
+				.println(Messages.getString("uploadLoginPasswordDescription"));
 		System.out.println(Messages.getString("loadLoginPasswordDescription"));
 		System.out.println(Messages.getString("loadGistsDescription"));
 		System.out.println(Messages.getString("showGistsDescription"));

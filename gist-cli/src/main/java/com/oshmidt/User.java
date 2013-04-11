@@ -4,7 +4,7 @@ public class User {
 	
 	private String login;
 
-	private char[] password;
+	private String password;
 
 	public String getLogin() {
 		return login;
@@ -14,11 +14,11 @@ public class User {
 		this.login = login;
 	}
 
-	public char[] getPassword() {
+	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(char[] password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
