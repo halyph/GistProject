@@ -20,13 +20,15 @@ import org.eclipse.egit.github.core.service.GistService;
 
 public class GistManager {
 
-	private static List<Gist> gists;
+	private List<Gist> gists;
+	
+	private static final String TYPE_GIST_ID = "typeGistID";
 
-	private static Scanner scanner;
+	private static Scanner scanner = new Scanner(System.in);
 
 	public void loadFiles(String login) throws IOException {
 
-		System.out.print(Messages.getString("typeGistID"));
+		System.out.print(Messages.getString(TYPE_GIST_ID));
 		String gid = scanner.nextLine();
 
 		for (Gist gist : gists) {
@@ -61,7 +63,7 @@ public class GistManager {
 
 	public void uploadFiles(User user) throws IOException {
 
-		System.out.print(Messages.getString("typeGistID"));
+		System.out.print(Messages.getString(TYPE_GIST_ID));
 		String gistId = scanner.nextLine();
 
 		for (Gist gist : gists) {

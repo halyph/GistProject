@@ -8,27 +8,21 @@ import java.util.Scanner;
 
 public class App {
 
-	private static Scanner scanner;
+	private static Scanner scanner = new Scanner(System.in);
 
-	private static User user;
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
+	private User user = new User();
 
 	private static App app;
+	
+	private static final String CONFIG_FILE_NAME = "config.properties";
 
-	public static GistManager gistManager = new GistManager();
-
+	private static GistManager gistManager = new GistManager();
+	
 	public static void main(String[] args) throws IOException {
 		// resource = ResourceBundle.getBundle("strings", Locale.getDefault());
 		app = new App();
-		user = new User();
-		scanner = new Scanner(System.in);
+		//user = new User();
+	
 		while (true) {
 			System.out.println("");
 			System.out.print(Messages.getString("typeCommand"));
@@ -45,13 +39,13 @@ public class App {
 			System.exit(0);
 		} else if (command.equals("status")) {
 			System.out.println(Messages.getString("login")
-					+ getUser().getLogin());
+					+ user.getLogin());
 			System.out.println(Messages.getString("pass")
-					+ new String(getUser().getPassword()));
+					+ new String(user.getPassword()));
 		} else if (command.toLowerCase().equals("creategist")) {
-			gistManager.createNewGist(getUser());
+			gistManager.createNewGist(user);
 		} else if (command.toLowerCase().equals("loadgists")) {
-			gistManager.loadGists(getUser());
+			gistManager.loadGists(user);
 		} else if (command.toLowerCase().equals("showgists")) {
 			gistManager.showGists();
 		} else if (command.toLowerCase().equals("savelp")) {
@@ -59,9 +53,9 @@ public class App {
 		} else if (command.toLowerCase().equals("loadlp")) {
 			loadLoginAdnPassword();
 		} else if (command.toLowerCase().equals("loadfiles")) {
-			gistManager.loadFiles(getUser().getLogin());
+			gistManager.loadFiles(user.getLogin());
 		} else if (command.toLowerCase().equals("uploadfiles")) {
-			gistManager.uploadFiles(getUser());
+			gistManager.uploadFiles(user);
 		} else if (command.equals("") || command.equals("help")) {
 			showHelp();
 		} else {
@@ -73,14 +67,14 @@ public class App {
 	public void saveLoginAndPassword() {
 		Properties prop = new Properties();
 		try {
-			if (getUser().getLogin() != null) {
-				prop.setProperty("login", getUser().getLogin());
+			if (user.getLogin() != null) {
+				prop.setProperty("login", user.getLogin());
 			}
-			if (getUser().getPassword() != null) {
+			if (user.getPassword() != null) {
 				prop.setProperty("password",
-						new String(getUser().getPassword()));
+						new String(user.getPassword()));
 			}
-			prop.store(new FileOutputStream("config.properties"), null);
+			prop.store(new FileOutputStream(CONFIG_FILE_NAME), null);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -89,12 +83,12 @@ public class App {
 	public void loadLoginAdnPassword() {
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream("config.properties"));
-			getUser().setLogin(prop.getProperty("login"));
-			getUser().setPassword(prop.getProperty("password").toCharArray());
+			prop.load(new FileInputStream(CONFIG_FILE_NAME));
+			user.setLogin(prop.getProperty("login"));
+			user.setPassword(prop.getProperty("password").toCharArray());
 
-			System.out.println(getUser().getLogin());
-			System.out.println(getUser().getPassword());
+			System.out.println(user.getLogin());
+			System.out.println(user.getPassword());
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -103,21 +97,20 @@ public class App {
 
 	public void readLogin() {
 		System.out.print(Messages.getString("typeLogin"));
-		getUser().setLogin(scanner.nextLine());
+		user.setLogin(scanner.nextLine());
 		readPassword();
 	}
 
 	public void readPassword() {
 		System.out.print(Messages.getString("typePassword"));
-		getUser().setPassword(scanner.nextLine().toCharArray());
+		user.setPassword(scanner.nextLine().toCharArray());
 	}
 
 	public void showHelp() {
 		System.out.println(Messages.getString("commandList"));
 		System.out.println(Messages.getString("statusDescription"));
 		System.out.println(Messages.getString("loginDescription"));
-		System.out
-				.println(Messages.getString("uploadLoginPasswordDescription"));
+		System.out.println(Messages.getString("uploadLoginPasswordDescription"));
 		System.out.println(Messages.getString("loadLoginPasswordDescription"));
 		System.out.println(Messages.getString("loadGistsDescription"));
 		System.out.println(Messages.getString("showGistsDescription"));
