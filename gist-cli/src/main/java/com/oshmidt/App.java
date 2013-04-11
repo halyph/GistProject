@@ -114,6 +114,9 @@ public class App {
 		System.out.println(Messages.getString("loadLoginPasswordDescription"));
 		System.out.println(Messages.getString("loadGistsDescription"));
 		System.out.println(Messages.getString("showGistsDescription"));
+		System.out.println(Messages.getString("createGistDescription"));
+		System.out.println(Messages.getString("loadFilesDescription"));
+		System.out.println(Messages.getString("uploadFilesDescription"));
 		System.out.println(Messages.getString("exit"));
 	}
 
