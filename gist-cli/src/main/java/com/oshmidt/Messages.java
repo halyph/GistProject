@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 
 public class Messages { 
 	// property file is: package/name/messages.properties
-    private static final String BUNDLE_NAME = "strings";
+    private static final String BUNDLE_NAME = "GistMessages";
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
     private Messages() {
     }
