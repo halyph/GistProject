@@ -11,7 +11,7 @@
 
 	<target name="compile" depends="resolve" description="Compile">
 		<mkdir dir="${build.classes}" />
-		<javac srcdir="./src/main/java" destdir="${build.classes}">
+		<javac srcdir="${src.main}/java" destdir="${build.classes}">
 			<classpath refid="default.classpath" />
 		</javac>
 		<copy todir="${build.classes}" overwrite="false">
@@ -25,22 +25,26 @@
 		</copy>
 	</target>
 
-	<target name="build_jar" depends="clean, compile">
-		<jar destfile="gist-cli.jar" filesetmanifest="mergewithoutmain">
+	<target name="build_jar" depends="compile" description="pack project to jar">
+		<jar destfile="${runnable.dir}/${runnable.file.name}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="com.oshmidt.App" />
-				<attribute name="Class-Path" value="." />
+				<attribute name="Main-Class" value="${manifest.main.class}" />
+				<attribute name="Class-Path" value="${manifest.class.path}" />
 			</manifest>
 			<fileset dir="${build.classes}" />
-			<zipfileset includes="**/*.class" src="${lib.dir}/org.eclipse.egit.github.core-2.1.3.jar" />
-			<zipfileset includes="**/*.class" src="${lib.dir}/gson-2.2.2.jar" />
 		</jar>
+		<copy todir="${runnable.dir}/lib" overwrite="false">
+			<fileset dir="lib">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<echo file="${runnable.dir}/${runnable.file.name}.bat" message="java -jar ${runnable.file.name}.jar" />
 	</target>
 
 	<target name="clean">
-		<delete dir="${lib.dir}"/>
-		<delete dir="${build.classes}"/>
+		<delete dir="${lib.dir}" />
+		<delete dir="${build.classes}" />
+		<delete dir="${runnable.dir}" />
 	</target>
-
 
 </project>
