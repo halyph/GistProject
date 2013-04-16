@@ -22,7 +22,7 @@ public class GistManager {
 
 	private List<Gist> gists;
 
-	private static final String TYPE_GIST_ID = "typeGistID";
+	private static final String TYPE_GIST_ID = "com.oshmidt.gistManager.typeGistID";
 
 	private static Scanner scanner = new Scanner(System.in);
 
@@ -99,7 +99,7 @@ public class GistManager {
 		if (service.getClient() != null) {
 			gists = service.getGists(user.getLogin());
 		} else {
-			System.out.println(Messages.getString("wrongLoginOrPassword"));
+			System.out.println(Messages.getString("com.oshmidt.gistManager.wrongLoginOrPassword"));
 		}
 
 	}
@@ -109,18 +109,18 @@ public class GistManager {
 			printSeparator();
 			for (Gist gist : gists) {
 				System.out.println(gist);
-				System.out.println(Messages.getString("gistID") + gist.getId());
-				System.out.println(Messages.getString("description")
+				System.out.println(Messages.getString("com.oshmidt.gistManager.gistID") + gist.getId());
+				System.out.println(Messages.getString("com.oshmidt.gistManager.description")
 						+ gist.getDescription());
 			}
 			printSeparator();
 		} else {
-			System.out.println(Messages.getString("noLoadedGists"));
+			System.out.println(Messages.getString("com.oshmidt.gistManager.noLoadedGists"));
 		}
 	}
 
 	public String[] readContent() throws IOException {
-		System.out.print(Messages.getString("typeFilepath"));
+		System.out.print(Messages.getString("com.oshmidt.gistManager.typeFilepath"));
 		String filepath = scanner.nextLine();
 		String[] a = { filepath, readFileAsString(filepath) };
 		return a;
@@ -153,7 +153,7 @@ public class GistManager {
 			file.setContent(content);
 			Gist gist = new Gist();
 			gist.setDescription(readString(Messages
-					.getString("typeGistDescription")));
+					.getString("com.oshmidt.gistManager.typeGistDescription")));
 			gist.setFiles(Collections.singletonMap(a[0], file));
 			GistService service = new GistService();
 			service.getClient().setCredentials(user.getLogin(),
