@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -21,6 +20,10 @@ import org.eclipse.egit.github.core.service.GistService;
 public class GistManager {
 
 	private List<Gist> gists;
+	
+	private GistFetcher gistFetcher = new GistFetcher();
+	
+	private User user = new User();
 
 	private static final String TYPE_GIST_ID = "com.oshmidt.gistManager.typeGistID";
 
@@ -93,27 +96,20 @@ public class GistManager {
 		}
 	}
 
-	public void loadGists(User user) throws IOException {
-		GistService service = new GistService();
-		service.getClient().setCredentials(user.getLogin(), user.getPassword());
-		if (service.getClient() != null) {
-			gists = service.getGists(user.getLogin());
-		} else {
-			System.out.println(Messages.getString("com.oshmidt.gistManager.wrongLoginOrPassword"));
-		}
 
-	}
-
-	public void showGists() {
+	public void showGists() throws IOException {
 		if (gists != null) {
 			printSeparator();
 			for (Gist gist : gists) {
-				System.out.println(gist);
-				System.out.println(Messages.getString("com.oshmidt.gistManager.gistID") + gist.getId());
-				System.out.println(Messages.getString("com.oshmidt.gistManager.description")
-						+ gist.getDescription());
-			}
-			printSeparator();
+				printSeparator();
+				System.out.println();
+				System.out.println( );
+				Set<String> sett = gist.getFiles().keySet();
+				for (String s : sett) {
+					GistFile gf = gist.getFiles().get(s);
+					System.out.println(gf.getRawUrl());
+				}
+			}	
 		} else {
 			System.out.println(Messages.getString("com.oshmidt.gistManager.noLoadedGists"));
 		}
@@ -145,22 +141,6 @@ public class GistManager {
 
 	}
 
-	public void createNewGist(User user) throws IOException {
-		GistFile file = new GistFile();
-		String[] a = readContent();
-		String content = a[1];
-		if (content != null) {
-			file.setContent(content);
-			Gist gist = new Gist();
-			gist.setDescription(readString(Messages
-					.getString("com.oshmidt.gistManager.typeGistDescription")));
-			gist.setFiles(Collections.singletonMap(a[0], file));
-			GistService service = new GistService();
-			service.getClient().setCredentials(user.getLogin(),
-					user.getPassword());
-			gist = service.createGist(gist);
-		}
-	}
 
 	public String readString(String message) {
 		System.out.print(" " + message);
@@ -172,5 +152,54 @@ public class GistManager {
 			System.out.print("-");
 		}
 	}
+	
+	public void addNewGist(Gist gist){
+		try {
+			gistFetcher.addNewGist(user, gist);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void loadGists(){
+		try {
+			gists = gistFetcher.loadGists(user);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public Gist loadGist(String gistId){
+		try {
+			return gistFetcher.loadGist(gistId, user);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public void updateGist(Gist gist) {
+		try {
+			gistFetcher.updateGist(user, gist);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	public void deleteGist(String gistId) {
+		try {
+			gistFetcher.deleteGist(user, gistId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+		
+
 
 }

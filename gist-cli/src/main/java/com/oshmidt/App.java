@@ -12,38 +12,78 @@ public class App {
 
 	private User user = new User();
 
-	private static App app;
+	// private static App app;
 
 	private static final String CONFIG_FILE_NAME = "config.properties";
 
 	private static GistManager gistManager = new GistManager();
 
-	public static void main(String[] args) throws IOException {
-		// resource = ResourceBundle.getBundle("strings", Locale.getDefault());
-		app = new App();
-		// user = new User();
+	public static void main(String[] args) throws IOException,
+			org.apache.commons.cli.ParseException, ClassNotFoundException {
 
-		while (true) {
-			System.out.println("");
-			System.out.print(Messages.getString("com.oshmidt.gistManager.typeCommand"));
-			String command = scanner.nextLine();
-			app.doCommand(command);
-		}
+		/*
+		 * Options options = new Options();
+		 * 
+		 * // add t option options.addOption("t", true, "display current time");
+		 * options.addOption("m", true, "display current mime");
+		 * 
+		 * HelpFormatter formatter = new HelpFormatter();
+		 * formatter.printHelp("chat application",
+		 * "Read following instructions for tuning chat work", options,
+		 * "Developed by Acestime.Com");
+		 * 
+		 * CommandLineParser parser = new PosixParser(); CommandLine cmd =
+		 * parser.parse(options, args);
+		 * 
+		 * if (cmd.hasOption("t")) { String count = cmd.getOptionValue("t");
+		 * System.out.println("t " + count); // print the date and time }
+		 * 
+		 * if (cmd.hasOption("m")) { String count = cmd.getOptionValue("m");
+		 * System.out.println("m " + count); }
+		 */
+
+		/*
+		 * FileOutputStream fos = new FileOutputStream("temp.out");
+		 * ObjectOutputStream oos = new ObjectOutputStream(fos); Gist ts = new
+		 * Gist(); ts.setId("serializable"); oos.writeObject(ts); oos.flush();
+		 * oos.close();
+		 * 
+		 * 
+		 * FileInputStream fis = new FileInputStream("temp.out");
+		 * ObjectInputStream oin = new ObjectInputStream(fis); Gist tsd = (Gist)
+		 * oin.readObject(); System.out.println("version="+tsd.getId());
+		 */
+
+		/*
+		 * // resource = ResourceBundle.getBundle("strings",
+		 * Locale.getDefault()); app = new App(); // user = new User();
+		 * 
+		 * while (true) { System.out.println("");
+		 * System.out.print(Messages.getString
+		 * ("com.oshmidt.gistManager.typeCommand")); String command =
+		 * scanner.nextLine(); app.doCommand(command); }
+		 */
 	}
 
 	public void doCommand(String command) throws IOException {
 		if (command.equals("login")) {
 			readLogin();
 		} else if (command.equals("exit")) {
-			System.out.println(Messages.getString("com.oshmidt.gistManager.leaveMessage"));
+			System.out.println(Messages
+					.getString("com.oshmidt.gistManager.leaveMessage"));
 			System.exit(0);
 		} else if (command.equals("status")) {
-			System.out.println(Messages.getString("com.oshmidt.gistManager.login") + user.getLogin());
-			System.out.println(Messages.getString("com.oshmidt.gistManager.pass") + user.getPassword());
-		} else if (command.toLowerCase().equals("creategist")) {
-			gistManager.createNewGist(user);
-		} else if (command.toLowerCase().equals("loadgists")) {
-			gistManager.loadGists(user);
+			System.out.println(Messages
+					.getString("com.oshmidt.gistManager.login")
+					+ user.getLogin());
+			System.out.println(Messages
+					.getString("com.oshmidt.gistManager.pass")
+					+ user.getPassword());
+		} /*
+		 * else if (command.toLowerCase().equals("creategist")) {
+		 * gistManager.createNewGist(user); }
+		 */else if (command.toLowerCase().equals("loadgists")) {
+			gistManager.loadGists();
 		} else if (command.toLowerCase().equals("showgists")) {
 			gistManager.showGists();
 		} else if (command.toLowerCase().equals("savelp")) {
@@ -57,7 +97,8 @@ public class App {
 		} else if (command.equals("") || command.equals("help")) {
 			showHelp();
 		} else {
-			System.out.println(Messages.getString("com.oshmidt.gistManager.unknownCommand"));
+			System.out.println(Messages
+					.getString("com.oshmidt.gistManager.unknownCommand"));
 			System.out.println();
 		}
 	}
@@ -93,28 +134,41 @@ public class App {
 	}
 
 	public void readLogin() {
-		System.out.print(Messages.getString("com.oshmidt.gistManager.typeLogin"));
+		System.out.print(Messages
+				.getString("com.oshmidt.gistManager.typeLogin"));
 		user.setLogin(scanner.nextLine());
 		readPassword();
 	}
 
 	public void readPassword() {
-		System.out.print(Messages.getString("com.oshmidt.gistManager.typePassword"));
+		System.out.print(Messages
+				.getString("com.oshmidt.gistManager.typePassword"));
 		user.setPassword(scanner.nextLine());
 	}
 
 	public void showHelp() {
-		System.out.println(Messages.getString("com.oshmidt.gistManager.commandList"));
-		System.out.println(Messages.getString("com.oshmidt.gistManager.statusDescription"));
-		System.out.println(Messages.getString("com.oshmidt.gistManager.loginDescription"));
+		System.out.println(Messages
+				.getString("com.oshmidt.gistManager.commandList"));
+		System.out.println(Messages
+				.getString("com.oshmidt.gistManager.statusDescription"));
+		System.out.println(Messages
+				.getString("com.oshmidt.gistManager.loginDescription"));
 		System.out
-				.println(Messages.getString("com.oshmidt.gistManager.uploadLoginPasswordDescription"));
-		System.out.println(Messages.getString("com.oshmidt.gistManager.loadLoginPasswordDescription"));
-		System.out.println(Messages.getString("com.oshmidt.gistManager.loadGistsDescription"));
-		System.out.println(Messages.getString("com.oshmidt.gistManager.showGistsDescription"));
-		System.out.println(Messages.getString("com.oshmidt.gistManager.createGistDescription"));
-		System.out.println(Messages.getString("com.oshmidt.gistManager.loadFilesDescription"));
-		System.out.println(Messages.getString("com.oshmidt.gistManager.uploadFilesDescription"));
+				.println(Messages
+						.getString("com.oshmidt.gistManager.uploadLoginPasswordDescription"));
+		System.out
+				.println(Messages
+						.getString("com.oshmidt.gistManager.loadLoginPasswordDescription"));
+		System.out.println(Messages
+				.getString("com.oshmidt.gistManager.loadGistsDescription"));
+		System.out.println(Messages
+				.getString("com.oshmidt.gistManager.showGistsDescription"));
+		System.out.println(Messages
+				.getString("com.oshmidt.gistManager.createGistDescription"));
+		System.out.println(Messages
+				.getString("com.oshmidt.gistManager.loadFilesDescription"));
+		System.out.println(Messages
+				.getString("com.oshmidt.gistManager.uploadFilesDescription"));
 		System.out.println(Messages.getString("com.oshmidt.gistManager.exit"));
 	}
 
