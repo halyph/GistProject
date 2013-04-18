@@ -57,10 +57,12 @@ public class GistManager {
 			if (cmd.hasOption("l") && cmd.hasOption("p")) {
 				user.setLogin(cmd.getOptionValue("l"));
 				user.setPassword(cmd.getOptionValue("p"));
-				gistFetcher.loadGists(user);
+				gists = gistFetcher.loadGists(user);
+				glfm.writeGists(gists);
 			} else if (cmd.hasOption("d")) {
 				user.importUser();
-				gistFetcher.loadGists(user);
+				gists = gistFetcher.loadGists(user);
+				glfm.writeGists(gists);
 			} else {
 				gists = glfm.readGists();
 			}
