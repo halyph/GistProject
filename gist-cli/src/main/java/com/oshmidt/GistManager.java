@@ -13,6 +13,12 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.GistFile;
 import org.eclipse.egit.github.core.service.GistService;
@@ -20,14 +26,89 @@ import org.eclipse.egit.github.core.service.GistService;
 public class GistManager {
 
 	private List<Gist> gists;
-	
+
 	private GistFetcher gistFetcher = new GistFetcher();
-	
+
+	private GistRepository glfm = new GistLocalFileManager();
+
 	private User user = new User();
 
 	private static final String TYPE_GIST_ID = "com.oshmidt.gistManager.typeGistID";
 
 	private static Scanner scanner = new Scanner(System.in);
+
+	public GistManager(String[] args) {
+		Options options = new Options();
+
+		options.addOption("l", true, "login");
+		options.addOption("p", true, "password");
+		options.addOption("d", false, "download gists from github");
+		options.addOption("show", true, "show loaded gist list");
+		options.addOption("download", true,
+				"download files by gistId or download all gists files if run with \"all\" parameter");
+		options.addOption("h", "help", false, "print help to console");
+
+		
+
+		CommandLineParser parser = new PosixParser();
+		CommandLine cmd;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("l") && cmd.hasOption("p")) {
+				user.setLogin(cmd.getOptionValue("l"));
+				user.setPassword(cmd.getOptionValue("p"));
+				gistFetcher.loadGists(user);
+			} else if (cmd.hasOption("d")) {
+				user.importUser();
+				gistFetcher.loadGists(user);
+			} else {
+				gists = glfm.readGists();
+			}
+
+			if (cmd.hasOption("download")) {
+				if (cmd.getOptionValue("download").equals("all")) {
+					for (Gist gist : gists) {
+						glfm.writeFiles(gist);
+					}
+				} else {
+					glfm.writeFiles(findGist(cmd.getOptionValue("download")));
+				}
+			}
+			
+			
+			if (cmd.hasOption("h")) {
+				  HelpFormatter formatter = new HelpFormatter();
+				  formatter.printHelp("github gist client", "Read following instructions for tuning chat work", options,
+				  "Developed by oshmidt");
+			}
+			
+			
+			if (cmd.hasOption("show")) {
+				if (cmd.getOptionValue("show").equals("all")) {
+					showGists();
+				}
+			}
+
+			/*
+			 * if (cmd.hasOption("m")) { String count = cmd.getOptionValue("m");
+			 * System.out.println("m " + count); }
+			 */
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Gist findGist(String s) {
+		for (Gist gist : gists) {
+			if (gist.getId().equals(s)) {
+				return gist;
+			}
+		}
+		return null;
+	}
 
 	public void loadFiles(String login) throws IOException {
 
@@ -88,7 +169,7 @@ public class GistManager {
 								filename));
 					} else {
 						System.out.println(Messages.getString(
-								"localFileNotExist", filename));
+								"com.oshmidt.gistManager.localFileNotExist", filename));
 					}
 
 				}
@@ -96,27 +177,37 @@ public class GistManager {
 		}
 	}
 
-
 	public void showGists() throws IOException {
 		if (gists != null) {
-			printSeparator();
+			Messages.getString("com.oshmidt.gistManager.lineSeparator");
 			for (Gist gist : gists) {
-				printSeparator();
-				System.out.println();
-				System.out.println( );
-				Set<String> sett = gist.getFiles().keySet();
-				for (String s : sett) {
-					GistFile gf = gist.getFiles().get(s);
-					System.out.println(gf.getRawUrl());
-				}
-			}	
+				showGist(gist);
+			}
 		} else {
-			System.out.println(Messages.getString("com.oshmidt.gistManager.noLoadedGists"));
+			System.out.println(Messages
+					.getString("com.oshmidt.gistManager.noLoadedGists"));
 		}
 	}
+	
+	
+	public void showGist(Gist gist){
+		System.out.println(Messages.getString("com.oshmidt.gistManager.lineSeparator"));
+		System.out.println(Messages.getString("com.oshmidt.gistManager.gistID") + gist.getId());
+		
+		Set<String> sett = gist.getFiles().keySet();
+		int i=0;
+		for (String s : sett) {
+			GistFile gf = gist.getFiles().get(s);
+			i++;
+			System.out.println(i + ": " + gf.getFilename());
+		}
+		
+	}
+	
 
 	public String[] readContent() throws IOException {
-		System.out.print(Messages.getString("com.oshmidt.gistManager.typeFilepath"));
+		System.out.print(Messages
+				.getString("com.oshmidt.gistManager.typeFilepath"));
 		String filepath = scanner.nextLine();
 		String[] a = { filepath, readFileAsString(filepath) };
 		return a;
@@ -141,19 +232,13 @@ public class GistManager {
 
 	}
 
-
 	public String readString(String message) {
 		System.out.print(" " + message);
 		return scanner.nextLine();
 	}
 
-	private void printSeparator() {
-		for (int i = 0; i < 50; i++) {
-			System.out.print("-");
-		}
-	}
-	
-	public void addNewGist(Gist gist){
+
+	public void addNewGist(Gist gist) {
 		try {
 			gistFetcher.addNewGist(user, gist);
 		} catch (IOException e) {
@@ -161,8 +246,8 @@ public class GistManager {
 			e.printStackTrace();
 		}
 	}
-	
-	public void loadGists(){
+
+	public void loadGists() {
 		try {
 			gists = gistFetcher.loadGists(user);
 		} catch (IOException e) {
@@ -171,7 +256,7 @@ public class GistManager {
 		}
 	}
 
-	public Gist loadGist(String gistId){
+	public Gist loadGist(String gistId) {
 		try {
 			return gistFetcher.loadGist(gistId, user);
 		} catch (IOException e) {
@@ -180,7 +265,7 @@ public class GistManager {
 			return null;
 		}
 	}
-	
+
 	public void updateGist(Gist gist) {
 		try {
 			gistFetcher.updateGist(user, gist);
@@ -190,7 +275,6 @@ public class GistManager {
 		}
 	}
 
-
 	public void deleteGist(String gistId) {
 		try {
 			gistFetcher.deleteGist(user, gistId);
@@ -199,7 +283,5 @@ public class GistManager {
 			e.printStackTrace();
 		}
 	}
-		
-
 
 }

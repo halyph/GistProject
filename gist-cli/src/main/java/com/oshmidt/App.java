@@ -20,59 +20,24 @@ public class App {
 
 	private User user = new User();
 
-	private static App app;
+	// private static App app;
 
 	private static final String CONFIG_FILE_NAME = "config.properties";
 
-	private static GistManager gistManager = new GistManager();
+	private static GistManager gistManager;
 
 	public static void main(String[] args) throws IOException,
 			org.apache.commons.cli.ParseException, ClassNotFoundException {
 
-		/*
-		 * Options options = new Options();
-		 * 
-		 * // add t option options.addOption("t", true, "display current time");
-		 * options.addOption("m", true, "display current mime");
-		 * 
-		 * HelpFormatter formatter = new HelpFormatter();
-		 * formatter.printHelp("chat application",
-		 * "Read following instructions for tuning chat work", options,
-		 * "Developed by Acestime.Com");
-		 * 
-		 * CommandLineParser parser = new PosixParser(); CommandLine cmd =
-		 * parser.parse(options, args);
-		 * 
-		 * if (cmd.hasOption("t")) { String count = cmd.getOptionValue("t");
-		 * System.out.println("t " + count); // print the date and time }
-		 * 
-		 * if (cmd.hasOption("m")) { String count = cmd.getOptionValue("m");
-		 * System.out.println("m " + count); }
-		 */
+		gistManager = new GistManager(args);
 
 		/*
-		 * FileOutputStream fos = new FileOutputStream("temp.out");
-		 * ObjectOutputStream oos = new ObjectOutputStream(fos); Gist ts = new
-		 * Gist(); ts.setId("serializable"); oos.writeObject(ts); oos.flush();
-		 * oos.close();
+		 * app = new App(); // user = new User();
 		 * 
-		 * 
-		 * FileInputStream fis = new FileInputStream("temp.out");
-		 * ObjectInputStream oin = new ObjectInputStream(fis); Gist tsd = (Gist)
-		 * oin.readObject(); System.out.println("version="+tsd.getId());
+		 * while (true) { System.out.println(""); System.out.print(Messages
+		 * .getString("com.oshmidt.gistManager.typeCommand")); String command =
+		 * scanner.nextLine(); app.doCommand(command); }
 		 */
-
-		// resource = ResourceBundle.getBundle("strings", Locale.getDefault());
-
-		app = new App(); // user = new User();
-
-		while (true) {
-			System.out.println("");
-			System.out.print(Messages
-					.getString("com.oshmidt.gistManager.typeCommand"));
-			String command = scanner.nextLine();
-			app.doCommand(command);
-		}
 
 	}
 
@@ -114,7 +79,7 @@ public class App {
 			for (Gist gist : glfm.readGists()) {
 				glfm.writeFiles(gist);
 			}
-			
+
 			/* saveLoginAndPassword(); */
 		} else if (command.toLowerCase().equals("loadlp")) {
 			loadLoginAdnPassword();

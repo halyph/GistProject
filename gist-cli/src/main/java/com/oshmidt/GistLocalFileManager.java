@@ -110,7 +110,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 		Set<String> set = gistFiles.keySet();
 		for (String s : set) {
 			GistFile gf = gistFiles.get(s);
-			System.out.println(gf.getRawUrl());
+			System.out.println(gf.getFilename());
 			URL website;
 			try {
 				website = new URL(gf.getRawUrl());
@@ -130,8 +130,16 @@ public class GistLocalFileManager extends GistLocalRepository {
 				e.printStackTrace();
 			}
 		}
-
 	}
+	
+	
+	public void writeFiles(List<Gist> gists) {
+		for (Gist gist : gists) {
+			writeFiles(gist);
+		}
+		
+	}
+	
 
 
 	public Map<Gist, List<GistFile>> readFiles() {
