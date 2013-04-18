@@ -10,6 +10,7 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.GistFile;
 
@@ -62,6 +63,7 @@ public class App {
 		 */
 
 		// resource = ResourceBundle.getBundle("strings", Locale.getDefault());
+
 		app = new App(); // user = new User();
 
 		while (true) {
