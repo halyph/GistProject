@@ -1,11 +1,22 @@
 package com.oshmidt;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.GistFile;
@@ -13,50 +24,117 @@ import org.eclipse.egit.github.core.GistFile;
 public class GistLocalFileManager extends GistLocalRepository {
 
 	public static final String DEFAULT_PATH = "localRepository/";
+	public static final String GIST_FILE_EXT = ".gist";
 
 	void loadDefaultRepoPath() {
 		setRepoPath(DEFAULT_PATH);
 	}
 
-	List<Gist> readGists() {
-
-		return null;
+	public List<Gist> readGists() {
+		ArrayList<Gist> gists = new ArrayList<Gist>();
+		checkPath();
+		if (!new File(getRepoPath()).exists()) {
+			return null;
+		}
+		
+		FileFilter filter = new FileFilter() {
+			public boolean accept(File f) {
+				if (f.isFile() && f.getName().endsWith(GIST_FILE_EXT))
+					return true;
+				else
+					return false;
+			}
+		};
+		try {
+			for (File gst : new File(getRepoPath()).listFiles(filter)) {
+				FileInputStream fis = new FileInputStream(gst);
+				ObjectInputStream oin = new ObjectInputStream(fis);
+				Gist tsd;
+				tsd = (Gist) oin.readObject();
+				gists.add(tsd);
+				oin.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return gists;
 	}
 
-	@Override
-	void writeGists(List<Gist> gists) {
+	public void writeGists(List<Gist> gists) {
 
 		try {
 			for (Gist gist : gists) {
-			FileOutputStream fos;
-			fos = new FileOutputStream(getRepoPath() + gist.getId());
-
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			
+				FileOutputStream fos;
+				preparePath();
+				fos = new FileOutputStream(getRepoPath() + gist.getId()
+						+ GIST_FILE_EXT);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
 				oos.writeObject(gist);
 				oos.flush();
 				oos.close();
-
 			}
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	public void preparePath() {
+		checkPath();
+		if (!new File(getRepoPath()).exists()) {
+			new File(getRepoPath()).mkdirs();
+		}
+		/*
+		 * StringTokenizer st = new
+		 * StringTokenizer(getRepoPath(),File.separator); while
+		 * (st.hasMoreElements()) { if (new File(st.nextToken()).exists()){ cd }
+		 * object = (if (new File(st.nextToken()).exists()){
+		 * 
+		 * }) st.nextElement();
+		 * 
+		 * }
+		 */
+	}
+
+	public void checkPath() {
+		if (getRepoPath() == null) {
+			loadDefaultRepoPath();
+		}
+	}
+
+
+	public void writeFiles(Gist gist) {
+
+		Map<String, GistFile> gistFiles = gist.getFiles();
+		Set<String> set = gistFiles.keySet();
+		for (String s : set) {
+			GistFile gf = gistFiles.get(s);
+			System.out.println(gf.getRawUrl());
+			URL website;
+			try {
+				website = new URL(gf.getRawUrl());
+
+			ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+			
+			
+			setRepoPath(getRepoPath() + File.separator + gist.getId() + File.separator);
+			preparePath();
+			FileOutputStream fos = new FileOutputStream(new File(getRepoPath(), gf.getFilename()));
+			fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+			fos.close();
+			loadDefaultRepoPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
 
-	@Override
-	void writeFiles(Map<Gist, List<GistFile>> files) {
-		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	Map<Gist, List<GistFile>> readFiles() {
+	public Map<Gist, List<GistFile>> readFiles() {
 		// TODO Auto-generated method stub
 		return null;
 	}

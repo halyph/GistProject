@@ -11,7 +11,7 @@ public abstract class GistRepository {
 	
 	abstract List<Gist> readGists();
     abstract void writeGists(List<Gist> gists);    
-    abstract void writeFiles(Map<Gist, List<GistFile>> files);
+    abstract void writeFiles(Gist gist);
 	abstract Map<Gist, List<GistFile>> readFiles();
 
 }

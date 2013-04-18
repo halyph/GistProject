@@ -1,10 +1,17 @@
 package com.oshmidt;
 
+import java.util.List;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.Set;
+
+import org.eclipse.egit.github.core.Gist;
+import org.eclipse.egit.github.core.GistFile;
 
 public class App {
 
@@ -12,7 +19,7 @@ public class App {
 
 	private User user = new User();
 
-	// private static App app;
+	private static App app;
 
 	private static final String CONFIG_FILE_NAME = "config.properties";
 
@@ -54,15 +61,17 @@ public class App {
 		 * oin.readObject(); System.out.println("version="+tsd.getId());
 		 */
 
-		/*
-		 * // resource = ResourceBundle.getBundle("strings",
-		 * Locale.getDefault()); app = new App(); // user = new User();
-		 * 
-		 * while (true) { System.out.println("");
-		 * System.out.print(Messages.getString
-		 * ("com.oshmidt.gistManager.typeCommand")); String command =
-		 * scanner.nextLine(); app.doCommand(command); }
-		 */
+		// resource = ResourceBundle.getBundle("strings", Locale.getDefault());
+		app = new App(); // user = new User();
+
+		while (true) {
+			System.out.println("");
+			System.out.print(Messages
+					.getString("com.oshmidt.gistManager.typeCommand"));
+			String command = scanner.nextLine();
+			app.doCommand(command);
+		}
+
 	}
 
 	public void doCommand(String command) throws IOException {
@@ -83,11 +92,28 @@ public class App {
 		 * else if (command.toLowerCase().equals("creategist")) {
 		 * gistManager.createNewGist(user); }
 		 */else if (command.toLowerCase().equals("loadgists")) {
-			gistManager.loadGists();
+			System.out.println("load User");
+			loadLoginAdnPassword();
+			System.out.println("fetching");
+			GistFetcher gf = new GistFetcher();
+			List<Gist> gs = gf.loadGists(user);
+			System.out.println("output to display");
+			showGists(gs);
+			System.out.println("serialization");
+			GistRepository glfm = new GistLocalFileManager();
+			glfm.writeGists(gs);
+			// gistManager.loadGists();
 		} else if (command.toLowerCase().equals("showgists")) {
-			gistManager.showGists();
+			GistFetcher gf = new GistFetcher();
+			gf.loadGists(user);
+			// gistManager.showGists();
 		} else if (command.toLowerCase().equals("savelp")) {
-			saveLoginAndPassword();
+			GistRepository glfm = new GistLocalFileManager();
+			for (Gist gist : glfm.readGists()) {
+				glfm.writeFiles(gist);
+			}
+			
+			/* saveLoginAndPassword(); */
 		} else if (command.toLowerCase().equals("loadlp")) {
 			loadLoginAdnPassword();
 		} else if (command.toLowerCase().equals("loadfiles")) {
@@ -100,6 +126,27 @@ public class App {
 			System.out.println(Messages
 					.getString("com.oshmidt.gistManager.unknownCommand"));
 			System.out.println();
+		}
+	}
+
+	public void showGists(List<Gist> gists) throws IOException {
+		if (gists != null) {
+			System.out
+					.println("----------------------------------------------");
+			for (Gist gist : gists) {
+				System.out
+						.println("----------------------------------------------");
+				System.out.println();
+				System.out.println();
+				Set<String> sett = gist.getFiles().keySet();
+				for (String s : sett) {
+					GistFile gf = gist.getFiles().get(s);
+					System.out.println(gf.getRawUrl());
+				}
+			}
+		} else {
+			System.out.println(Messages
+					.getString("com.oshmidt.gistManager.noLoadedGists"));
 		}
 	}
 
