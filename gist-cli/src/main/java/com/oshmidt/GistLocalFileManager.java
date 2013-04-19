@@ -3,9 +3,7 @@ package com.oshmidt;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.GistFile;
 
@@ -25,6 +24,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 
 	public static final String DEFAULT_PATH = "localRepository/";
 	public static final String GIST_FILE_EXT = ".gist";
+	public static Logger glfmLogger = Logger.getLogger("logfile");
 
 	void loadDefaultRepoPath() {
 		setRepoPath(DEFAULT_PATH);
@@ -36,7 +36,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 		if (!new File(getRepoPath()).exists()) {
 			return null;
 		}
-		
+
 		FileFilter filter = new FileFilter() {
 			public boolean accept(File f) {
 				if (f.isFile() && f.getName().endsWith(GIST_FILE_EXT))
@@ -55,9 +55,9 @@ public class GistLocalFileManager extends GistLocalRepository {
 				oin.close();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			glfmLogger.error(e);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			glfmLogger.error(e);
 		}
 		return gists;
 	}
@@ -76,7 +76,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 				oos.close();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			glfmLogger.error(e);
 		}
 	}
 
@@ -85,16 +85,6 @@ public class GistLocalFileManager extends GistLocalRepository {
 		if (!new File(getRepoPath()).exists()) {
 			new File(getRepoPath()).mkdirs();
 		}
-		/*
-		 * StringTokenizer st = new
-		 * StringTokenizer(getRepoPath(),File.separator); while
-		 * (st.hasMoreElements()) { if (new File(st.nextToken()).exists()){ cd }
-		 * object = (if (new File(st.nextToken()).exists()){
-		 * 
-		 * }) st.nextElement();
-		 * 
-		 * }
-		 */
 	}
 
 	public void checkPath() {
@@ -102,7 +92,6 @@ public class GistLocalFileManager extends GistLocalRepository {
 			loadDefaultRepoPath();
 		}
 	}
-
 
 	public void writeFiles(Gist gist) {
 
@@ -115,32 +104,31 @@ public class GistLocalFileManager extends GistLocalRepository {
 			try {
 				website = new URL(gf.getRawUrl());
 
-			ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-			
-			
-			setRepoPath(getRepoPath() + File.separator + gist.getId() + File.separator);
-			preparePath();
-			FileOutputStream fos = new FileOutputStream(new File(getRepoPath(), gf.getFilename()));
-			fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-			fos.close();
-			loadDefaultRepoPath();
+				ReadableByteChannel rbc = Channels.newChannel(website
+						.openStream());
+
+				setRepoPath(getRepoPath() + File.separator + gist.getId()
+						+ File.separator);
+				preparePath();
+				FileOutputStream fos = new FileOutputStream(new File(
+						getRepoPath(), gf.getFilename()));
+				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+				fos.close();
+				loadDefaultRepoPath();
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				glfmLogger.error(e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				glfmLogger.error(e);
 			}
 		}
 	}
-	
-	
+
 	public void writeFiles(List<Gist> gists) {
 		for (Gist gist : gists) {
 			writeFiles(gist);
 		}
-		
-	}
-	
 
+	}
 
 	public Map<Gist, List<GistFile>> readFiles() {
 		// TODO Auto-generated method stub

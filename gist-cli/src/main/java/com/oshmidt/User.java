@@ -4,10 +4,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 public class User {
-	
+
+	public static Logger userManagerLogger = Logger.getLogger("logfile");
+
 	private static final String CONFIG_FILE_NAME = "config.properties";
-	
+
 	private String login;
 
 	private String password;
@@ -27,8 +31,7 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
+
 	public void importUser(String filename) {
 		Properties prop = new Properties();
 		try {
@@ -36,10 +39,10 @@ public class User {
 			setLogin(prop.getProperty("login"));
 			setPassword(prop.getProperty("password"));
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			userManagerLogger.error(ex);
 		}
 	}
-	
+
 	public void importUser() {
 		importUser(CONFIG_FILE_NAME);
 	}
