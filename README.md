@@ -1,14 +1,14 @@
-For build inside gist-cli folder type:"Ant", it create runnable jar file. For run it type "java -jar gist-cli.jar -h"
+Build project
+=========
+For build, inside gist-cli folder type:"Ant", it create runnable jar file.
+
+Ğ¡ommands:
+=========
+* `java â€“jar gist-cli.jar â€“d` the same behavior as previously command if exist inside working directory user property file (â€œconfig.propertiesâ€)
+* `java â€“jar gist-cli.jar â€“h` show command list
+* `java â€“jar gist-cli.jar â€“show gistId` show gist info by ID
+* `java â€“jar gist-cli.jar â€“show all` show all user gists info
+* `java â€“jar gist-cli.jar â€“download gistId` download gist files by gistId into work directory (/localRepository/â€™gistIdâ€™/)
+* `java â€“jar gist-cli.jar â€“download all` download all gists files into work directory  (/localRepository/â€™gistIdâ€™/)
 
 
-Bugs and improvement
-I) Show help when user don’t input options
-I) Change option “-l”,”--login” to “u” and “user”
-B) Show warning when user input option with necessary parameter without parameter
-B) Show warning when user input non-existent option
-B) Show warning (from github server) when user input wrong login or password 
-B) Wrong behavior without internet connection
-I) Need show message when application start downloading file
-B) Show warning when application running with “–d” option and without user property file (config.properties) 
-B) Show warning when user property file has wrong format.
-I – improvement, B - bug
