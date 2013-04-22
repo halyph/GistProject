@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.GistFile;
 
-public abstract class GistRepository {
+public interface GistRepository {
 	
 	abstract List<Gist> readGists();
     abstract void writeGists(List<Gist> gists);    

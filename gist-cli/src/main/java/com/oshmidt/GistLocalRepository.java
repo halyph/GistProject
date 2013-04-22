@@ -1,6 +1,6 @@
 package com.oshmidt;
 
-public abstract class GistLocalRepository extends GistRepository {
+public abstract class GistLocalRepository implements GistRepository {
 	
 	private String repoPath;
 
