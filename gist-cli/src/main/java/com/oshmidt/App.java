@@ -7,7 +7,7 @@ public class App {
 	 * CONFIG_FILE_NAME = "config.properties"; private static GistManager
 	 * gistManager;
 	 */
-
+  
 	public static void main(String[] args) {
 		new GistManager(args);
 	}
