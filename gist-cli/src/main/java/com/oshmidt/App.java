@@ -11,56 +11,101 @@ import org.apache.commons.cli.PosixParser;
 import org.apache.log4j.Logger;
 
 public class App {
+
+	private static final String HELP_SHORT = Messages
+			.getString("com.oshmidt.cli.short.help");
+	private static final String HELP_LONG = Messages
+			.getString("com.oshmidt.cli.long.help");
+	private static final String HELP_DESCRIPTION = Messages
+			.getString("com.oshmidt.cli.description.help");
+
+	private static final String ALL_KEY = Messages
+			.getString("com.oshmidt.cli.allKey");
+
+	private static final String USERNAME_SHORT = Messages
+			.getString("com.oshmidt.cli.short.username");
+	private static final String USERNAME_DESCRIPTION = Messages
+			.getString("com.oshmidt.cli.description.username");
+
+	private static final String PASSWORD_SHORT = Messages
+			.getString("com.oshmidt.cli.short.password");
+	private static final String PASSWORD_DESCRIPTION = Messages
+			.getString("com.oshmidt.cli.description.password");
+
+	private static final String DOWNLOAD_GISTS_SHORT = Messages
+			.getString("com.oshmidt.cli.short.downloadGists");
+	private static final String DOWNLOAD_GISTS_DESCRIPTION = Messages
+			.getString("com.oshmidt.cli.description.downloadGists");
+
+	private static final String SHOW_LOCAL_GISTS_LONG = Messages
+			.getString("com.oshmidt.cli.long.showLocalGists");
+	private static final String SHOW_LOCAL_GISTS_DESCRIPTION = Messages
+			.getString("com.oshmidt.cli.description.showLocalGists");
+
+	private static final String DOWNLOAD_FILES_LONG = Messages
+			.getString("com.oshmidt.cli.long.downloadFiles");
+	private static final String DOWNLOAD_FILES_DESCRIPTION = Messages
+			.getString("com.oshmidt.cli.description.downloadFiles");
+	
+	private static final String SHORT_DESCRIPTION = Messages
+			.getString("com.oshmidt.cli.short.Description");
+	
+	private static final String HELP_TITLE = Messages
+			.getString("com.oshmidt.cli.helpTitle");
+	
+	private static final String HELP_DEVELOPED_BY = Messages
+			.getString("com.oshmidt.cli.helpDevelopedBy");
+
 	public static GistManager gistManager = new GistManager();
 	public static Logger managerLogger = Logger.getLogger("logfile");
 
 	public static void main(String[] args) {
 		managerLogger.info(Messages.getString(
-				"com.oshmidt.gistManager.aplicationStartOption",
+				"com.oshmidt.cli.aplicationStartOption",
 				StringUtils.convertToString(args)));
 
 		Options options = new Options();
 
-		options.addOption("l", true, "login");
-		options.addOption("p", true, "password");
-		options.addOption("d", false, "download gists from github");
-		options.addOption("show", true, "show loaded gist list");
-		options.addOption(
-				"download",
-				true,
-				"download files by gistId or download all gists files if run with \"all\" parameter");
-		options.addOption("h", "help", false, "print help to console");
+		options.addOption(USERNAME_SHORT, true, USERNAME_DESCRIPTION);
+		options.addOption(PASSWORD_SHORT, true, PASSWORD_DESCRIPTION);
+		options.addOption(DOWNLOAD_GISTS_SHORT, false,
+				DOWNLOAD_GISTS_DESCRIPTION);
+		options.addOption(SHOW_LOCAL_GISTS_LONG, true,
+				SHOW_LOCAL_GISTS_DESCRIPTION);
+		options.addOption(DOWNLOAD_FILES_LONG, true, DOWNLOAD_FILES_DESCRIPTION);
+		options.addOption(HELP_SHORT, HELP_LONG, false, HELP_DESCRIPTION);
 
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd;
 		try {
 
 			cmd = parser.parse(options, args);
-			if (cmd.hasOption("l") && cmd.hasOption("p")) {
+			if (cmd.hasOption(USERNAME_SHORT) && cmd.hasOption(PASSWORD_SHORT)) {
 
-				gistManager.initUser(cmd.getOptionValue("l"),
-						cmd.getOptionValue("p"));
+				gistManager.initUser(cmd.getOptionValue(USERNAME_SHORT),
+						cmd.getOptionValue(PASSWORD_SHORT));
 				gistManager.loadAndSaveRemoteGists();
-			} else if (cmd.hasOption("d")) {
+			} else if (cmd.hasOption(DOWNLOAD_GISTS_SHORT)) {
 				gistManager.importUser();
 				gistManager.loadAndSaveRemoteGists();
 			} else {
 				gistManager.readLocalGists();
 			}
 
-			if (cmd.hasOption("download")) {
-				gistManager.downloadGists(cmd.getOptionValue("download"));
+			if (cmd.hasOption(DOWNLOAD_FILES_LONG)) {
+				gistManager.downloadGists(cmd.getOptionValue(DOWNLOAD_FILES_LONG));
 			}
 
-			if (cmd.hasOption("h")) {
+			if (cmd.hasOption(HELP_SHORT)) {
 				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp("github gist client",
-						"Read following instructions for tuning chat work",
-						options, "Developed by oshmidt");
+				formatter.printHelp(SHORT_DESCRIPTION,
+						HELP_TITLE,
+						options, HELP_DEVELOPED_BY);
 			}
 
-			if (cmd.hasOption("show")) {
-				if (cmd.getOptionValue("show").equals("all")) {
+			if (cmd.hasOption(SHOW_LOCAL_GISTS_LONG)) {
+				
+				if (cmd.getOptionValue(SHOW_LOCAL_GISTS_LONG).equals(ALL_KEY)) {
 					gistManager.showGists();
 				}
 			}
