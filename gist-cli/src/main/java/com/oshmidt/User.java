@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 public class User {
 
-	public static Logger userManagerLogger = Logger.getLogger("logfile");
+	private static Logger userManagerLogger = Logger.getLogger("logfile");
 
 	private static final String CONFIG_FILE_NAME = "config.properties";
 
@@ -33,6 +33,12 @@ public class User {
 		this.password = password;
 	}
 
+	/**
+	 * Import user from local property file
+	 * 
+	 * @param filename
+	 *            name for property file with user data
+	 */
 	public boolean importUser(String filename) {
 		Properties prop = new Properties();
 		// try {
@@ -53,6 +59,10 @@ public class User {
 
 	}
 
+	/**
+	 * Import user from local property file
+	 * {@link com.oshmidt.User#CONFIG_FILE_NAME}
+	 */
 	public void importUser() {
 		importUser(CONFIG_FILE_NAME);
 	}
