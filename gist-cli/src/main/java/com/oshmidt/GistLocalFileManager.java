@@ -32,7 +32,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 
 	public List<Gist> readGists() {
 		ArrayList<Gist> gists = new ArrayList<Gist>();
-		checkPath();
+		preparePath();
 		if (!new File(getRepoPath()).exists()) {
 			return null;
 		}
@@ -67,7 +67,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 		try {
 			for (Gist gist : gists) {
 				FileOutputStream fos;
-				preparePath();
+				safeMakeDir();
 				fos = new FileOutputStream(getRepoPath() + gist.getId()
 						+ GIST_FILE_EXT);
 				ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -80,14 +80,14 @@ public class GistLocalFileManager extends GistLocalRepository {
 		}
 	}
 
-	public void preparePath() {
-		checkPath();
+	private void safeMakeDir() {
+		preparePath();
 		if (!new File(getRepoPath()).exists()) {
 			new File(getRepoPath()).mkdirs();
 		}
 	}
 
-	public void checkPath() {
+	private void preparePath() {
 		if (getRepoPath() == null) {
 			loadDefaultRepoPath();
 		}
@@ -109,7 +109,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 
 				setRepoPath(getRepoPath() + File.separator + gist.getId()
 						+ File.separator);
-				preparePath();
+				safeMakeDir();
 				FileOutputStream fos = new FileOutputStream(new File(
 						getRepoPath(), gf.getFilename()));
 				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
