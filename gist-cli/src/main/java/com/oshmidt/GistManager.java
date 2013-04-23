@@ -18,8 +18,9 @@ public class GistManager {
 
 	private User user;
 
-	public Logger managerLogger;
+	private Logger managerLogger;
 
+	/** GistManager constructor. Initialize self component. */
 	public GistManager() {
 		user = new User();
 		managerLogger = Logger.getLogger("logfile");
@@ -27,29 +28,60 @@ public class GistManager {
 		glfm = new GistLocalFileManager();
 	}
 
+	/**
+	 * Method setting user name and password
+	 * 
+	 * @param username
+	 *            - user name for Github
+	 * @param password
+	 *            - password for Github
+	 */
 	public void initUser(String username, String password) {
 		user.setLogin(username);
 		user.setPassword(password);
 	}
 
+	/**
+	 * Method tries import user name and password. Used
+	 * {@link com.oshmidt.User#importUser()}
+	 */
 	public void importUser() {
 		user.importUser();
 	}
-	
-	public void loadAndSaveRemoteGists(){
+
+	/**
+	 * Method load gists from Github and save them to local file system. Used
+	 * {@link com.oshmidt.GistManager#loadGists()}
+	 * {@link com.oshmidt.GistManager#writeLocalGists()}
+	 */
+	public void loadAndSaveRemoteGists() {
 		loadGists();
 		writeLocalGists();
 	}
 
+	/**
+	 * Method serialize gists to local file system. Used
+	 * {@link com.oshmidt.GistLocalFileManager#writeGists(List)}
+	 */
 	public void writeLocalGists() {
 		glfm.writeGists(gists);
 	}
 
+	/**
+	 * Method deserialize gists from local file system. Used
+	 * {@link com.oshmidt.GistLocalFileManager#readGists()}
+	 */
 	public void readLocalGists() {
 		gists = glfm.readGists();
 	}
+
 	
-	public void downloadGists(String key){
+	/**
+	 * Method download gist files from Github and save them to local file system. Used
+	 * {@link com.oshmidt.GistLocalFileManager#writeFiles(Gist)}
+	 * @param key - gistId 
+	 */
+	public void downloadGists(String key) {
 		if (key.equals("all")) {
 			for (Gist gist : gists) {
 				glfm.writeFiles(gist);
@@ -59,16 +91,21 @@ public class GistManager {
 		}
 	}
 
-	public Gist findGist(String s) {
+	
+	/**
+	 * Method find and return gist by his ID. Method searching in {@link com.oshmidt.GistManager#gists}. Used
+	 * @param key - gistId 
+	 */
+	public Gist findGist(String key) {
 		for (Gist gist : gists) {
-			if (gist.getId().equals(s)) {
+			if (gist.getId().equals(key)) {
 				return gist;
 			}
 		}
 		return null;
 	}
 
-	public void showGists(){
+	public void showGists() {
 		if (gists != null) {
 			Messages.getString("com.oshmidt.gistManager.lineSeparator");
 			for (Gist gist : gists) {
