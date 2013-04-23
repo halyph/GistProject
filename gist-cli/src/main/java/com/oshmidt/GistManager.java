@@ -68,7 +68,7 @@ public class GistManager {
 		return null;
 	}
 
-	public void showGists() throws IOException {
+	public void showGists(){
 		if (gists != null) {
 			Messages.getString("com.oshmidt.gistManager.lineSeparator");
 			for (Gist gist : gists) {

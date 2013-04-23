@@ -1,7 +1,5 @@
 package com.oshmidt;
 
-import java.io.IOException;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -46,26 +44,69 @@ public class App {
 			.getString("com.oshmidt.cli.long.downloadFiles");
 	private static final String DOWNLOAD_FILES_DESCRIPTION = Messages
 			.getString("com.oshmidt.cli.description.downloadFiles");
-	
+
 	private static final String SHORT_DESCRIPTION = Messages
 			.getString("com.oshmidt.cli.short.Description");
-	
+
 	private static final String HELP_TITLE = Messages
 			.getString("com.oshmidt.cli.helpTitle");
-	
+
+	private static final String WRONG_COMMAND = Messages
+			.getString("com.oshmidt.cli.wrongCommand");
+
 	private static final String HELP_DEVELOPED_BY = Messages
 			.getString("com.oshmidt.cli.helpDevelopedBy");
 
 	public static GistManager gistManager = new GistManager();
-	public static Logger managerLogger = Logger.getLogger("logfile");
+	public static Logger fileLogger = Logger.getLogger(App.class);
 
 	public static void main(String[] args) {
-		managerLogger.info(Messages.getString(
+		fileLogger.info(Messages.getString(
 				"com.oshmidt.cli.aplicationStartOption",
 				StringUtils.convertToString(args)));
 
-		Options options = new Options();
+		CommandLineParser parser = new PosixParser();
+		CommandLine cmd = null;
 
+		try {
+			cmd = parser.parse(initOptions(), args);
+		} catch (ParseException e1) {
+			fileLogger.error(WRONG_COMMAND + e1);
+			System.out.println(WRONG_COMMAND);
+			return;
+		}
+		if (cmd.hasOption(USERNAME_SHORT) && cmd.hasOption(PASSWORD_SHORT)) {
+
+			gistManager.initUser(cmd.getOptionValue(USERNAME_SHORT),
+					cmd.getOptionValue(PASSWORD_SHORT));
+			gistManager.loadAndSaveRemoteGists();
+		} else if (cmd.hasOption(DOWNLOAD_GISTS_SHORT)) {
+			gistManager.importUser();
+			gistManager.loadAndSaveRemoteGists();
+		} else {
+			gistManager.readLocalGists();
+		}
+
+		if (cmd.hasOption(DOWNLOAD_FILES_LONG)) {
+			gistManager.downloadGists(cmd.getOptionValue(DOWNLOAD_FILES_LONG));
+		}
+
+		if (cmd.hasOption(HELP_SHORT)) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp(SHORT_DESCRIPTION, HELP_TITLE, initOptions(),
+					HELP_DEVELOPED_BY);
+		}
+
+		if (cmd.hasOption(SHOW_LOCAL_GISTS_LONG)) {
+			if (cmd.getOptionValue(SHOW_LOCAL_GISTS_LONG).equals(ALL_KEY)) {
+				gistManager.showGists();
+			}
+		}
+
+	}
+
+	private static Options initOptions() {
+		Options options = new Options();
 		options.addOption(USERNAME_SHORT, true, USERNAME_DESCRIPTION);
 		options.addOption(PASSWORD_SHORT, true, PASSWORD_DESCRIPTION);
 		options.addOption(DOWNLOAD_GISTS_SHORT, false,
@@ -74,49 +115,8 @@ public class App {
 				SHOW_LOCAL_GISTS_DESCRIPTION);
 		options.addOption(DOWNLOAD_FILES_LONG, true, DOWNLOAD_FILES_DESCRIPTION);
 		options.addOption(HELP_SHORT, HELP_LONG, false, HELP_DESCRIPTION);
+		return options;
 
-		CommandLineParser parser = new PosixParser();
-		CommandLine cmd;
-		try {
-
-			cmd = parser.parse(options, args);
-			if (cmd.hasOption(USERNAME_SHORT) && cmd.hasOption(PASSWORD_SHORT)) {
-
-				gistManager.initUser(cmd.getOptionValue(USERNAME_SHORT),
-						cmd.getOptionValue(PASSWORD_SHORT));
-				gistManager.loadAndSaveRemoteGists();
-			} else if (cmd.hasOption(DOWNLOAD_GISTS_SHORT)) {
-				gistManager.importUser();
-				gistManager.loadAndSaveRemoteGists();
-			} else {
-				gistManager.readLocalGists();
-			}
-
-			if (cmd.hasOption(DOWNLOAD_FILES_LONG)) {
-				gistManager.downloadGists(cmd.getOptionValue(DOWNLOAD_FILES_LONG));
-			}
-
-			if (cmd.hasOption(HELP_SHORT)) {
-				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp(SHORT_DESCRIPTION,
-						HELP_TITLE,
-						options, HELP_DEVELOPED_BY);
-			}
-
-			if (cmd.hasOption(SHOW_LOCAL_GISTS_LONG)) {
-				
-				if (cmd.getOptionValue(SHOW_LOCAL_GISTS_LONG).equals(ALL_KEY)) {
-					gistManager.showGists();
-				}
-			}
-
-		} catch (ParseException e) {
-			managerLogger.error(e);
-		} catch (IOException e) {
-			managerLogger.error(e);
-		} catch (Exception e) {
-			managerLogger.error(e);
-		}
 	}
 
 }

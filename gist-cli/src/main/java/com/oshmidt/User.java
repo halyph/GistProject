@@ -1,6 +1,7 @@
 package com.oshmidt;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -32,15 +33,24 @@ public class User {
 		this.password = password;
 	}
 
-	public void importUser(String filename) {
+	public boolean importUser(String filename) {
 		Properties prop = new Properties();
+		// try {
 		try {
 			prop.load(new FileInputStream(filename));
-			setLogin(prop.getProperty("login"));
-			setPassword(prop.getProperty("password"));
-		} catch (IOException ex) {
-			userManagerLogger.error(ex);
+		} catch (FileNotFoundException e) {
+			userManagerLogger.error(Messages
+					.getString("com.oshmidt.cli.userFileNotFoutd"));
+			return false;
+		} catch (IOException e) {
+			userManagerLogger.error(Messages
+					.getString("com.oshmidt.cli.wrongRserFile"));
+			return false;
 		}
+		setLogin(prop.getProperty("login"));
+		setPassword(prop.getProperty("password"));
+		return true;
+
 	}
 
 	public void importUser() {
