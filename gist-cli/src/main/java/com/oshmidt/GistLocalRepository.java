@@ -1,7 +1,10 @@
 package com.oshmidt;
 
 public abstract class GistLocalRepository implements GistRepository {
-	
+
+	/**
+	 * Path for local repository. Used through the setter and getter
+	 */
 	private String repoPath;
 
 	public String getRepoPath() {
@@ -11,7 +14,7 @@ public abstract class GistLocalRepository implements GistRepository {
 	public void setRepoPath(String repoPath) {
 		this.repoPath = repoPath;
 	}
-	
+
 	abstract void loadDefaultRepoPath();
 
 }

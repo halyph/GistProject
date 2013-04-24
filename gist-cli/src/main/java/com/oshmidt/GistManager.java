@@ -75,11 +75,12 @@ public class GistManager {
 		gists = glfm.readGists();
 	}
 
-	
 	/**
-	 * Method download gist files from Github and save them to local file system. Used
-	 * {@link com.oshmidt.GistLocalFileManager#writeFiles(Gist)}
-	 * @param key - gistId 
+	 * Method download gist files from Github and save them to local file
+	 * system. Used {@link com.oshmidt.GistLocalFileManager#writeFiles(Gist)}
+	 * 
+	 * @param key
+	 *            - gistId
 	 */
 	public void downloadGists(String key) {
 		if (key.equals("all")) {
@@ -91,10 +92,12 @@ public class GistManager {
 		}
 	}
 
-	
 	/**
-	 * Method find and return gist by his ID. Method searching in {@link com.oshmidt.GistManager#gists}. Used
-	 * @param key - gistId 
+	 * Method find and return gist by his ID. Method searching in
+	 * {@link com.oshmidt.GistManager#gists}. Used
+	 * 
+	 * @param key
+	 *            - gistId
 	 */
 	public Gist findGist(String key) {
 		for (Gist gist : gists) {
@@ -105,6 +108,13 @@ public class GistManager {
 		return null;
 	}
 
+	/**
+	 * Method print to console all loaded gists. Used
+	 * {@link com.oshmidt.GistManager#showGist(Gist)}
+	 * 
+	 * @param gist
+	 *            - Gist object {@link org.eclipse.egit.github.core.Gist}
+	 */
 	public void showGists() {
 		if (gists != null) {
 			Messages.getString("com.oshmidt.gistManager.lineSeparator");
@@ -117,6 +127,12 @@ public class GistManager {
 		}
 	}
 
+	/**
+	 * Method print to console gist info and his list files
+	 * 
+	 * @param gist
+	 *            - Gist object {@link org.eclipse.egit.github.core.Gist}
+	 */
 	public void showGist(Gist gist) {
 		System.out.println(Messages
 				.getString("com.oshmidt.gistManager.lineSeparator"));
@@ -133,6 +149,12 @@ public class GistManager {
 
 	}
 
+	/**
+	 * Method tries upload new Gist tu Github.
+	 * 
+	 * @param gist
+	 *            - Gist object {@link org.eclipse.egit.github.core.Gist}
+	 */
 	public void addNewGist(Gist gist) {
 		try {
 			gistFetcher.addNewGist(user, gist);
@@ -141,6 +163,9 @@ public class GistManager {
 		}
 	}
 
+	/**
+	 * Method tries download gists from Github
+	 */
 	public void loadGists() {
 		try {
 			gists = gistFetcher.loadGists(user);
@@ -149,6 +174,13 @@ public class GistManager {
 		}
 	}
 
+	/**
+	 * Method download Gist from Github by his ID;
+	 * 
+	 * @param gistId
+	 *            - {@link org.eclipse.egit.github.core.Gist#getId()}
+	 * @return gist - Gist object {@link org.eclipse.egit.github.core.Gist}
+	 */
 	public Gist loadGist(String gistId) {
 		try {
 			return gistFetcher.loadGist(gistId, user);
@@ -158,6 +190,11 @@ public class GistManager {
 		}
 	}
 
+	/**
+	 * Method send updated Gist object to github.
+	 * 
+	 * @param gist - Gist object {@link org.eclipse.egit.github.core.Gist}
+	 */
 	public void updateGist(Gist gist) {
 		try {
 			gistFetcher.updateGist(user, gist);
@@ -166,11 +203,17 @@ public class GistManager {
 		}
 	}
 
-	public void deleteGist(String gistId) {
+	/**Method delete Gist object from Github.
+	 * @param gistId - {@link org.eclipse.egit.github.core.Gist#getId()}
+	 * @return true if deleting was without exception, false if server return IOException
+	 */
+	public boolean deleteGist(String gistId) {
 		try {
 			gistFetcher.deleteGist(user, gistId);
+			return true;
 		} catch (IOException e) {
 			managerLogger.error(e);
+			return false;
 		}
 	}
 
