@@ -1,6 +1,6 @@
 ﻿Build project
 =========
-For build, inside gist-cli folder type:"Ant", it create runnable jar file.
+For build, inside gist-cli folder type:`ant` for build project by Ant or type:`mvn install` for build by maven, it create runnable jar file.
 
 Сommands:
 =========
@@ -14,12 +14,12 @@ For build, inside gist-cli folder type:"Ant", it create runnable jar file.
 
 Documentation:
 =========
-Ant `?`
-Maven  `mvn javadoc:javadoc` create doucmentation to `gist-cli\target\site\`
+* Ant `?`
+* Maven  `mvn javadoc:javadoc` create doucmentation to `gist-cli\target\site\`
 
 
 
 Tests:
 =========
-Ant `?`
-Maven  `mvn test` run tests and create report to `gist-cli\target\surefire-reports\index.html`
+* Ant `?`
+* Maven  `mvn test` run tests and create report to `gist-cli\target\surefire-reports\index.html`
