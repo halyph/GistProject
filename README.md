@@ -1,4 +1,4 @@
-Build project
+﻿Build project
 =========
 For build, inside gist-cli folder type:"Ant", it create runnable jar file.
 
@@ -12,3 +12,14 @@ For build, inside gist-cli folder type:"Ant", it create runnable jar file.
 * `java –jar gist-cli.jar –download all` download all gists files into work directory  (/localRepository/’gistId’/)
 
 
+Documentation:
+=========
+Ant `?`
+Maven  `mvn javadoc:javadoc` create doucmentation to `gist-cli\\target\site\`
+
+
+
+Tests:
+=========
+Ant `?`
+Maven  `mvn test` run tests and create report to `gist-cli\target\surefire-reports\index.html`
