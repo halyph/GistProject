@@ -1,5 +1,11 @@
 package com.oshmidt;
 
+/**
+ * @author oshmidt
+ *         <p>
+ *         Abstract class for gist local repository repository. Created for
+ *         generalizing local repositories.
+ */
 public abstract class GistLocalRepository implements GistRepository {
 
 	/**
@@ -15,6 +21,10 @@ public abstract class GistLocalRepository implements GistRepository {
 		this.repoPath = repoPath;
 	}
 
+	
+	/**
+	 * Load default path to repository. Must be defined inside inheritor class.
+	 */
 	abstract void loadDefaultRepoPath();
 
 }

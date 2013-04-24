@@ -8,6 +8,10 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.log4j.Logger;
 
+/**
+ * @author oshmidt
+ *<p>Main class. Application start point. After start parsed options and send them to GistManager.
+ */
 public class App {
 
 	private static final String HELP_SHORT = Messages

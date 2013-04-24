@@ -6,6 +6,14 @@ import java.util.List;
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.service.GistService;
 
+/**
+ * @author oshmidt 
+ * <p>Class adapter for Github library. All server side exceptions
+ *         throws up to caller.
+ * 
+ * @see org.eclipse.egit.github.core.Gist;
+ * @see org.eclipse.egit.github.core.service.GistService;
+ */
 public class GistFetcher {
 	private GistService service = new GistService();
 

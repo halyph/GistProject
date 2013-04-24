@@ -20,6 +20,12 @@ import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.GistFile;
 
+/**
+ * @author oshmidt
+ * <p>
+ *  Class GistLocalRepository implementation. Created for store user data inside file system. 
+ *
+ */
 public class GistLocalFileManager extends GistLocalRepository {
 
 	/** Default path for local repository. */

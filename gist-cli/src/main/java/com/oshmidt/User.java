@@ -7,6 +7,11 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author oshmidt
+ *         <p>
+ *         Class for saving and keeping user data. 
+ */
 public class User {
 
 	private static Logger userManagerLogger = Logger.getLogger("logfile");

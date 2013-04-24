@@ -8,6 +8,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.GistFile;
 
+/**
+ * @author oshmidt
+ *<p> Class gist manager. Created for centralize user operation with gist.
+ */
 public class GistManager {
 
 	private List<Gist> gists;
