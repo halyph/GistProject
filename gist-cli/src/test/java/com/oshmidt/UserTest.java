@@ -1,8 +1,9 @@
 package com.oshmidt;
 
 import static org.junit.Assert.*;
+import org.testng.annotations.Test;
 
-import org.junit.Test;
+//import org.junit.Test;
 
 public class UserTest {
 
