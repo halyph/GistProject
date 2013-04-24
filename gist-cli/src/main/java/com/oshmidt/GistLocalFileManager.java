@@ -22,9 +22,10 @@ import org.eclipse.egit.github.core.GistFile;
 
 /**
  * @author oshmidt
- * <p>
- *  Class GistLocalRepository implementation. Created for store user data inside file system. 
- *
+ *         <p>
+ *         Class GistLocalRepository implementation. Created for store user data
+ *         inside file system.
+ * 
  */
 public class GistLocalFileManager extends GistLocalRepository {
 
@@ -34,7 +35,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 	/** Extension for serialized gists */
 	public static final String GIST_FILE_EXT = ".gist";
 
-	private static Logger glfmLogger = Logger.getLogger("logfile");
+	private static Logger logger = Logger.getLogger(GistLocalFileManager.class);
 
 	/**
 	 * Loading default value for "repoPath". Set default value for
@@ -60,15 +61,22 @@ public class GistLocalFileManager extends GistLocalRepository {
 		FileFilter filter = createGistFilter();
 		try {
 			for (File gst : new File(getRepoPath()).listFiles(filter)) {
+				logger.info(gst.getName());
+				logger.info(Messages.getString("com.oshmidt.gistManager.fis"));
 				FileInputStream fis = new FileInputStream(gst);
+				logger.info(Messages.getString("com.oshmidt.gistManager.oin"));
 				ObjectInputStream oin = new ObjectInputStream(fis);
+				logger.info(Messages
+						.getString("com.oshmidt.gistManager.oinRead"));
 				gists.add((Gist) oin.readObject());
+				logger.info(Messages
+						.getString("com.oshmidt.gistManager.oinClose"));
 				oin.close();
 			}
 		} catch (IOException e) {
-			glfmLogger.error(e);
+			logger.error(e);
 		} catch (ClassNotFoundException e) {
-			glfmLogger.error(e);
+			logger.error(e);
 		}
 		return gists;
 	}
@@ -80,20 +88,28 @@ public class GistLocalFileManager extends GistLocalRepository {
 	 * @paramTakes Gists list.
 	 */
 	public void writeGists(List<Gist> gists) {
-
 		try {
 			for (Gist gist : gists) {
+				logger.info(gist.getId());
+				logger.info(Messages.getString("com.oshmidt.gistManager.fos"));
 				FileOutputStream fos;
 				safeMakeDir();
 				fos = new FileOutputStream(getRepoPath() + gist.getId()
 						+ GIST_FILE_EXT);
+				logger.info(Messages.getString("com.oshmidt.gistManager.oin"));
 				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				logger.info(Messages
+						.getString("com.oshmidt.gistManager.oosWrite"));
 				oos.writeObject(gist);
+				logger.info(Messages
+						.getString("com.oshmidt.gistManager.oosFlush"));
 				oos.flush();
+				logger.info(Messages
+						.getString("com.oshmidt.gistManager.oosClose"));
 				oos.close();
 			}
 		} catch (IOException e) {
-			glfmLogger.error(e);
+			logger.error(e);
 		}
 	}
 
@@ -108,25 +124,29 @@ public class GistLocalFileManager extends GistLocalRepository {
 		Set<String> set = gistFiles.keySet();
 		for (String s : set) {
 			GistFile gf = gistFiles.get(s);
-			System.out.println(gf.getFilename());
+			message(gf.getFilename());
 			URL website;
 			try {
 				website = new URL(gf.getRawUrl());
+				logger.info(Messages
+						.getString("com.oshmidt.gistManager.oStream"));
 				ReadableByteChannel rbc = Channels.newChannel(website
 						.openStream());
-
 				setRepoPath(getRepoPath() + File.separator + gist.getId()
 						+ File.separator);
 				safeMakeDir();
+				logger.info(Messages.getString("com.oshmidt.gistManager.fos"));
 				FileOutputStream fos = new FileOutputStream(new File(
 						getRepoPath(), gf.getFilename()));
 				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+				logger.info(Messages
+						.getString("com.oshmidt.gistManager.oosClose"));
 				fos.close();
 				loadDefaultRepoPath();
 			} catch (MalformedURLException e) {
-				glfmLogger.error(e);
+				logger.error(e);
 			} catch (IOException e) {
-				glfmLogger.error(e);
+				logger.error(e);
 			}
 		}
 	}
@@ -173,5 +193,10 @@ public class GistLocalFileManager extends GistLocalRepository {
 		if (getRepoPath() == null) {
 			loadDefaultRepoPath();
 		}
+	}
+
+	private void message(String mes) {
+		logger.info(mes);
+		System.out.println(mes);
 	}
 }

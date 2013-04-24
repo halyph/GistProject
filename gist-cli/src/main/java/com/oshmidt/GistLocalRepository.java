@@ -21,7 +21,6 @@ public abstract class GistLocalRepository implements GistRepository {
 		this.repoPath = repoPath;
 	}
 
-	
 	/**
 	 * Load default path to repository. Must be defined inside inheritor class.
 	 */

@@ -6,8 +6,8 @@ import java.util.ResourceBundle;
 
 /**
  * @author oshmidt
- * <p>
- * Class helper. Used for simplification access to resources. 
+ *         <p>
+ *         Class helper. Used for simplification access to resources.
  */
 public class Messages {
 	private static final String BUNDLE_NAME = "GistMessages";

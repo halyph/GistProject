@@ -33,13 +33,14 @@ public interface GistRepository {
 
 	/**
 	 * Download and save Gist files
+	 * 
 	 * @paramTakes Gist item.
 	 */
 	abstract void writeFiles(Gist gist);
 
-	
 	/**
 	 * Load saved gists.
+	 * 
 	 * @return Map <Gist, List<GistFile>>
 	 */
 	abstract Map<Gist, List<GistFile>> readFiles();

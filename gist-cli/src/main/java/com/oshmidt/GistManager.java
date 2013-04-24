@@ -10,9 +10,37 @@ import org.eclipse.egit.github.core.GistFile;
 
 /**
  * @author oshmidt
- *<p> Class gist manager. Created for centralize user operation with gist.
+ *         <p>
+ *         Class gist manager. Created for centralize user operation with gist.
  */
 public class GistManager {
+
+	private static final String START_DOWNLOADING_GISTS = Messages
+			.getString("com.oshmidt.gistManager.startDownloadingGists");
+	private static final String START_DOWNLOADING_GIST = Messages
+			.getString("com.oshmidt.gistManager.startDownloadingGist");
+	private static final String START_DOWNLOADING_FILES = Messages
+			.getString("com.oshmidt.gistManager.startDownloadingFiles");
+	private static final String START_UPDATING_GIST = Messages
+			.getString("com.oshmidt.gistManager.startUpdatingGist");
+	private static final String START_DELETING_GIST = Messages
+			.getString("com.oshmidt.gistManager.startDeletingGist");
+	private static final String START_SERIALIZE_FILES = Messages
+			.getString("com.oshmidt.gistManager.startSerializingGist");
+	private static final String START_DESERIALIZE_FILES = Messages
+			.getString("com.oshmidt.gistManager.startDeserializingGist");
+	private static final String SEPARATOR = Messages
+			.getString("com.oshmidt.gistManager.lineSeparator");
+	private static final String NO_GISTS = Messages
+			.getString("com.oshmidt.gistManager.noLoadedGists");
+	private static final String NEW_GIST = Messages
+			.getString("com.oshmidt.gistManager.tryAddNewGist");
+	public static final String DESERIALIZE_GISTS_FAIL = Messages
+			.getString("com.oshmidt.gistManager.desFails");
+	public static final String SERIALIZE_GISTS_FAIL = Messages
+			.getString("com.oshmidt.gistManager.serFails");
+	public static final String UN_GIST_ID = Messages
+			.getString("com.oshmidt.gistManager.wrongGist");
 
 	private List<Gist> gists;
 
@@ -22,12 +50,12 @@ public class GistManager {
 
 	private User user;
 
-	private Logger managerLogger;
+	private Logger logger;
 
 	/** GistManager constructor. Initialize self component. */
 	public GistManager() {
 		user = new User();
-		managerLogger = Logger.getLogger("logfile");
+		logger = Logger.getLogger(GistManager.class);
 		gistFetcher = new GistFetcher();
 		glfm = new GistLocalFileManager();
 	}
@@ -50,7 +78,11 @@ public class GistManager {
 	 * {@link com.oshmidt.User#importUser()}
 	 */
 	public void importUser() {
-		user.importUser();
+		if (!user.importUser()) {
+			System.out.println(Messages
+					.getString("com.oshmidt.gistManager.userDataFileProblem"));
+			System.exit(0);
+		}
 	}
 
 	/**
@@ -68,7 +100,10 @@ public class GistManager {
 	 * {@link com.oshmidt.GistLocalFileManager#writeGists(List)}
 	 */
 	public void writeLocalGists() {
-		glfm.writeGists(gists);
+		message(START_SERIALIZE_FILES);
+		if (!(gists == null)) {
+			glfm.writeGists(gists);
+		}
 	}
 
 	/**
@@ -76,7 +111,11 @@ public class GistManager {
 	 * {@link com.oshmidt.GistLocalFileManager#readGists()}
 	 */
 	public void readLocalGists() {
+		message(START_DESERIALIZE_FILES);
 		gists = glfm.readGists();
+		if (gists == null) {
+			message(DESERIALIZE_GISTS_FAIL);
+		}
 	}
 
 	/**
@@ -87,6 +126,7 @@ public class GistManager {
 	 *            - gistId
 	 */
 	public void downloadGists(String key) {
+		message(START_DOWNLOADING_FILES);
 		if (key.equals("all")) {
 			for (Gist gist : gists) {
 				glfm.writeFiles(gist);
@@ -109,6 +149,7 @@ public class GistManager {
 				return gist;
 			}
 		}
+		message(UN_GIST_ID);
 		return null;
 	}
 
@@ -121,13 +162,11 @@ public class GistManager {
 	 */
 	public void showGists() {
 		if (gists != null) {
-			Messages.getString("com.oshmidt.gistManager.lineSeparator");
 			for (Gist gist : gists) {
 				showGist(gist);
 			}
 		} else {
-			System.out.println(Messages
-					.getString("com.oshmidt.gistManager.noLoadedGists"));
+			message(NO_GISTS);
 		}
 	}
 
@@ -138,9 +177,8 @@ public class GistManager {
 	 *            - Gist object {@link org.eclipse.egit.github.core.Gist}
 	 */
 	public void showGist(Gist gist) {
-		System.out.println(Messages
-				.getString("com.oshmidt.gistManager.lineSeparator"));
-		System.out.println(Messages.getString("com.oshmidt.gistManager.gistID")
+		System.out.println(SEPARATOR);
+		message(Messages.getString("com.oshmidt.gistManager.gistID")
 				+ gist.getId());
 
 		Set<String> sett = gist.getFiles().keySet();
@@ -148,7 +186,7 @@ public class GistManager {
 		for (String s : sett) {
 			GistFile gf = gist.getFiles().get(s);
 			i++;
-			System.out.println(i + ": " + gf.getFilename());
+			message(i + ": " + gf.getFilename());
 		}
 
 	}
@@ -161,9 +199,10 @@ public class GistManager {
 	 */
 	public void addNewGist(Gist gist) {
 		try {
+			message(NEW_GIST);
 			gistFetcher.addNewGist(user, gist);
 		} catch (IOException e) {
-			managerLogger.error(e);
+			logger.error(e);
 		}
 	}
 
@@ -172,9 +211,10 @@ public class GistManager {
 	 */
 	public void loadGists() {
 		try {
+			message(START_DOWNLOADING_GISTS);
 			gists = gistFetcher.loadGists(user);
 		} catch (IOException e) {
-			managerLogger.error(e);
+			logger.error(e);
 		}
 	}
 
@@ -187,9 +227,10 @@ public class GistManager {
 	 */
 	public Gist loadGist(String gistId) {
 		try {
+			message(START_DOWNLOADING_GIST);
 			return gistFetcher.loadGist(gistId, user);
 		} catch (IOException e) {
-			managerLogger.error(e);
+			logger.error(e);
 			return null;
 		}
 	}
@@ -197,28 +238,40 @@ public class GistManager {
 	/**
 	 * Method send updated Gist object to github.
 	 * 
-	 * @param gist - Gist object {@link org.eclipse.egit.github.core.Gist}
+	 * @param gist
+	 *            - Gist object {@link org.eclipse.egit.github.core.Gist}
 	 */
 	public void updateGist(Gist gist) {
 		try {
+			message(START_UPDATING_GIST);
 			gistFetcher.updateGist(user, gist);
 		} catch (IOException e) {
-			managerLogger.error(e);
+			logger.error(e);
 		}
 	}
 
-	/**Method delete Gist object from Github.
-	 * @param gistId - {@link org.eclipse.egit.github.core.Gist#getId()}
-	 * @return true if deleting was without exception, false if server return IOException
+	/**
+	 * Method delete Gist object from Github.
+	 * 
+	 * @param gistId
+	 *            - {@link org.eclipse.egit.github.core.Gist#getId()}
+	 * @return true if deleting was without exception, false if server return
+	 *         IOException
 	 */
 	public boolean deleteGist(String gistId) {
 		try {
+			message(START_DELETING_GIST);
 			gistFetcher.deleteGist(user, gistId);
 			return true;
 		} catch (IOException e) {
-			managerLogger.error(e);
+			logger.error(e);
 			return false;
 		}
+	}
+
+	private void message(String mes) {
+		logger.info(mes);
+		System.out.println(mes);
 	}
 
 }

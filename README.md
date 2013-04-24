@@ -15,7 +15,7 @@ For build, inside gist-cli folder type:"Ant", it create runnable jar file.
 Documentation:
 =========
 Ant `?`
-Maven  `mvn javadoc:javadoc` create doucmentation to `gist-cli\\target\site\`
+Maven  `mvn javadoc:javadoc` create doucmentation to `gist-cli\target\site\`
 
 
 

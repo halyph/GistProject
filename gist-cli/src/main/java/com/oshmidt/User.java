@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 /**
  * @author oshmidt
  *         <p>
- *         Class for saving and keeping user data. 
+ *         Class for saving and keeping user data.
  */
 public class User {
 
@@ -46,8 +46,9 @@ public class User {
 	 */
 	public boolean importUser(String filename) {
 		Properties prop = new Properties();
-		// try {
 		try {
+			userManagerLogger.info(Messages
+					.getString("com.oshmidt.gistManager.tryLoadUserData"));
 			prop.load(new FileInputStream(filename));
 		} catch (FileNotFoundException e) {
 			userManagerLogger.error(Messages
@@ -68,8 +69,8 @@ public class User {
 	 * Import user from local property file
 	 * {@link com.oshmidt.User#CONFIG_FILE_NAME}
 	 */
-	public void importUser() {
-		importUser(CONFIG_FILE_NAME);
+	public boolean importUser() {
+		return importUser(CONFIG_FILE_NAME);
 	}
 
 }

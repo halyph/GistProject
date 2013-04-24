@@ -10,7 +10,9 @@ import org.apache.log4j.Logger;
 
 /**
  * @author oshmidt
- *<p>Main class. Application start point. After start parsed options and send them to GistManager.
+ *         <p>
+ *         Main class. Application start point. After start parsed options and
+ *         send them to GistManager.
  */
 public class App {
 
@@ -62,11 +64,10 @@ public class App {
 			.getString("com.oshmidt.cli.helpDevelopedBy");
 
 	public static GistManager gistManager = new GistManager();
-	public static Logger fileLogger = Logger.getLogger(App.class);
+	public static Logger logger = Logger.getLogger(App.class);
 
 	public static void main(String[] args) {
-		fileLogger.info(Messages.getString(
-				"com.oshmidt.cli.aplicationStartOption",
+		logger.info(Messages.getString("com.oshmidt.cli.aplicationStartOption",
 				StringUtils.convertToString(args)));
 
 		CommandLineParser parser = new PosixParser();
@@ -75,7 +76,7 @@ public class App {
 		try {
 			cmd = parser.parse(initOptions(), args);
 		} catch (ParseException e1) {
-			fileLogger.error(WRONG_COMMAND + e1);
+			logger.error(WRONG_COMMAND + e1);
 			System.out.println(WRONG_COMMAND);
 			return;
 		}
