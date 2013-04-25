@@ -1,6 +1,6 @@
 Build project:
 =========
-For build, inside gist-cli folder type:`ant` for build project by Ant or type:`mvn install` for build by maven, it create runnable jar file. As needed you can automatically install ivy, for it type: `init-ivy`
+For build, inside gist-cli folder type:`ant` for build project by Ant or type:`mvn install` for build by maven, it create runnable jar file. As needed you can automatically install ivy, for it type: `ant init-ivy`
 
 Сommands:
 =========
