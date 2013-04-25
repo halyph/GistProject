@@ -1,6 +1,12 @@
+Info:
+=========
+Project created for simplification access to Github gist.
+
+
 Build project:
 =========
 For build, inside gist-cli folder type:`ant` for build project by Ant or type:`mvn install` for build by maven, it create runnable jar file. As needed you can automatically install ivy, for it type: `ant init-ivy`
+
 
 Сommands:
 =========
@@ -14,9 +20,8 @@ For build, inside gist-cli folder type:`ant` for build project by Ant or type:`m
 
 Documentation:
 =========
-* Ant `ant makedoc` create documentation to `gist-cli\build\runnable\javadoc\`
+* Ant `ant javadoc` create documentation to `gist-cli\build\runnable\javadoc\`
 * Maven  `mvn javadoc:javadoc` create doucmentation to `gist-cli\target\site\`
-
 
 
 Tests:
@@ -26,4 +31,4 @@ Tests:
 
 Code Coverage:
 =========
-*`mvn -DskipTests=true cobertura:cobertura` generate code coverage documentation by maven
+*`mvn cobertura:cobertura` generate code coverage documentation by maven
