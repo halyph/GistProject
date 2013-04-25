@@ -5,22 +5,29 @@ package com.oshmidt;
  *         <p>
  *         Class for difference operation with strings.
  */
-public class StringUtils {
+public final class StringUtils {
 
+	/**
+	 * Hiding class constructor to prohibit creating class instance.
+	 */
 	private StringUtils() {
 	}
 
 	/**
-	 * Convert string array to string
+	 * Concatenate string array to string.
 	 * 
 	 * @param args
-	 *            - string array
+	 *            - String array
+	 * @param separator
+	 *            - String
 	 * @return string - glued array
 	 */
-	public static String convertToString(String[] args) {
+
+	public static String convertToString(final String[] args,
+			final String separator) {
 		StringBuilder full = new StringBuilder();
 		for (String string : args) {
-			full.append(string + " ");
+			full.append(string + separator);
 		}
 		return full.toString();
 	}

@@ -63,12 +63,25 @@ public class App {
 	private static final String HELP_DEVELOPED_BY = Messages
 			.getString("com.oshmidt.cli.helpDevelopedBy");
 
-	public static GistManager gistManager = new GistManager();
-	public static Logger logger = Logger.getLogger(App.class);
+	/**
+	 * GistManager instance.
+	 */
+	private static GistManager gistManager = new GistManager();
 
-	public static void main(String[] args) {
+	/**
+	 * Logger instance.
+	 */
+	private static Logger logger = Logger.getLogger(App.class);
+
+	/**
+	 * Application start point.
+	 * 
+	 * @param args
+	 *            - start arguments
+	 */
+	public static void main(final String[] args) {
 		logger.info(Messages.getString("com.oshmidt.cli.aplicationStartOption",
-				StringUtils.convertToString(args)));
+				StringUtils.convertToString(args, " ")));
 
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd = null;
@@ -110,6 +123,11 @@ public class App {
 
 	}
 
+	/**
+	 * Method create and return options for parsing input parameters.
+	 * 
+	 * @return Options - {@link org.apache.commons.cli.Option}
+	 */
 	private static Options initOptions() {
 		Options options = new Options();
 		options.addOption(USERNAME_SHORT, true, USERNAME_DESCRIPTION);

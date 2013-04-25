@@ -13,11 +13,20 @@ public abstract class GistLocalRepository implements GistRepository {
 	 */
 	private String repoPath;
 
-	public String getRepoPath() {
+	/**
+	 * @return String - current path to repository
+	 */
+	public final String getRepoPath() {
 		return repoPath;
 	}
 
-	public void setRepoPath(String repoPath) {
+	/**
+	 * Setter for repoPath field.
+	 * 
+	 * @param repoPath
+	 *            - String path to repository
+	 */
+	public final void setRepoPath(final String repoPath) {
 		this.repoPath = repoPath;
 	}
 

@@ -16,38 +16,83 @@ import org.eclipse.egit.github.core.service.GistService;
  * @see org.eclipse.egit.github.core.service.GistService;
  */
 public class GistFetcher {
+
+	/**
+	 * local GistService instance.
+	 */
 	private GistService service = new GistService();
 
-	private void setClientCredentials(User user) {
+	/**Setting credentials for github.
+	 * @param user - {@link com.oshmidt.User}
+	 */
+	private void setClientCredentials(final User user) {
 		service.getClient().setCredentials(user.getLogin(), user.getPassword());
 	}
 
-	public Gist addNewGist(User user, Gist gist) throws IOException {
+	/**
+	 * Method for adding new gist to Github.
+	 * 
+	 * @param user
+	 *            - {@link com.oshmidt.User}
+	 * @param gist
+	 *            - new gist item
+	 * @return gist - copy added gist
+	 * @throws IOException 
+	 */
+	public final Gist addNewGist(final User user, final Gist gist)
+			throws IOException {
 		setClientCredentials(user);
 		return service.createGist(gist);
 	}
 
-	public List<Gist> loadGists(User user) throws IOException {
+	/**Method load gists from Github.
+	 * @param user - {@link com.oshmidt.User}
+	 * @return list gists
+	 * @throws IOException 
+	 */
+	public final List<Gist> loadGists(final User user) throws IOException {
 		setClientCredentials(user);
 		return service.getGists(user.getLogin());
 	}
 
-	public Gist loadGist(String gistId, User user) throws IOException {
+	/**Method load Gist from github by gis ID.
+	 * @param gistId - {@link org.eclipse.egit.github.core.Gist#gistID}
+	 * @param user - {@link com.oshmidt.User}
+	 * @return Gist - {@link org.eclipse.egit.github.core.Gist}
+	 * @throws IOException 
+	 */
+	public final Gist loadGist(final String gistId, final User user) throws IOException {
 		setClientCredentials(user);
 		return service.getGist(gistId);
 	}
 
-	public Gist updateGist(User user, Gist gist) throws IOException {
+	/**Method update gist.
+	 * @param user - {@link com.oshmidt.User}
+	 * @param gist - {@link org.eclipse.egit.github.core.Gist}
+	 * @return {@link org.eclipse.egit.github.core.Gist}
+	 * @throws IOException 
+	 */
+	public final Gist updateGist(final User user, final Gist gist) throws IOException {
 		setClientCredentials(user);
 		return service.updateGist(gist);
 	}
 
-	public void deleteGist(User user, String gistId) throws IOException {
+	/**
+	 * @param user - {@link com.oshmidt.User}
+	 * @param gistId - {@link org.eclipse.egit.github.core.Gist#gistID}
+	 * @throws IOException 
+	 */
+	public final void deleteGist(final User user, final String gistId) throws IOException {
 		setClientCredentials(user);
 		service.deleteGist(gistId);
 	}
 
-	public void deleteGists(User user, List<Gist> gists) throws IOException {
+	/**
+	 * @param user - {@link com.oshmidt.User}
+	 * @param gists - {@link org.eclipse.egit.github.core.Gist}
+	 * @throws IOException 
+	 */
+	public final void deleteGists(final User user, final List<Gist> gists) throws IOException {
 		for (Gist gist : gists) {
 			deleteGist(user, gist.getId());
 		}

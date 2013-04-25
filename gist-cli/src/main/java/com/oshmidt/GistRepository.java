@@ -22,27 +22,29 @@ public interface GistRepository {
 	 * 
 	 * @return Deserialized gists.
 	 */
-	abstract List<Gist> readGists();
+	List<Gist> readGists();
 
 	/**
 	 * Serialize gists.
 	 * 
-	 * @paramTakes Gists list.
+	 * @param gists
+	 *            - gist list.
 	 */
-	abstract void writeGists(List<Gist> gists);
+	void writeGists(List<Gist> gists);
 
 	/**
-	 * Download and save Gist files
+	 * Download and save Gist files.
 	 * 
-	 * @paramTakes Gist item.
+	 * @param gist
+	 *            gist item.
 	 */
-	abstract void writeFiles(Gist gist);
+	void writeFiles(Gist gist);
 
 	/**
 	 * Load saved gists.
 	 * 
 	 * @return Map <Gist, List<GistFile>>
 	 */
-	abstract Map<Gist, List<GistFile>> readFiles();
+	Map<Gist, List<GistFile>> readFiles();
 
 }

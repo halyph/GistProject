@@ -35,11 +35,9 @@ public class GistManager {
 			.getString("com.oshmidt.gistManager.noLoadedGists");
 	private static final String NEW_GIST = Messages
 			.getString("com.oshmidt.gistManager.tryAddNewGist");
-	public static final String DESERIALIZE_GISTS_FAIL = Messages
+	private static final String DESERIALIZE_GISTS_FAIL = Messages
 			.getString("com.oshmidt.gistManager.desFails");
-	public static final String SERIALIZE_GISTS_FAIL = Messages
-			.getString("com.oshmidt.gistManager.serFails");
-	public static final String UN_GIST_ID = Messages
+	private static final String UN_GIST_ID = Messages
 			.getString("com.oshmidt.gistManager.wrongGist");
 
 	private List<Gist> gists;
@@ -61,14 +59,14 @@ public class GistManager {
 	}
 
 	/**
-	 * Method setting user name and password
+	 * Method setting user name and password.
 	 * 
 	 * @param username
 	 *            - user name for Github
 	 * @param password
 	 *            - password for Github
 	 */
-	public void initUser(String username, String password) {
+	public final void initUser(final String username, final String password) {
 		user.setLogin(username);
 		user.setPassword(password);
 	}
@@ -77,7 +75,7 @@ public class GistManager {
 	 * Method tries import user name and password. Used
 	 * {@link com.oshmidt.User#importUser()}
 	 */
-	public void importUser() {
+	public final void importUser() {
 		if (!user.importUser()) {
 			System.out.println(Messages
 					.getString("com.oshmidt.gistManager.userDataFileProblem"));
@@ -90,7 +88,7 @@ public class GistManager {
 	 * {@link com.oshmidt.GistManager#loadGists()}
 	 * {@link com.oshmidt.GistManager#writeLocalGists()}
 	 */
-	public void loadAndSaveRemoteGists() {
+	public final void loadAndSaveRemoteGists() {
 		loadGists();
 		writeLocalGists();
 	}
@@ -99,7 +97,7 @@ public class GistManager {
 	 * Method serialize gists to local file system. Used
 	 * {@link com.oshmidt.GistLocalFileManager#writeGists(List)}
 	 */
-	public void writeLocalGists() {
+	public final void writeLocalGists() {
 		message(START_SERIALIZE_FILES);
 		if (!(gists == null)) {
 			glfm.writeGists(gists);
@@ -110,7 +108,7 @@ public class GistManager {
 	 * Method deserialize gists from local file system. Used
 	 * {@link com.oshmidt.GistLocalFileManager#readGists()}
 	 */
-	public void readLocalGists() {
+	public final void readLocalGists() {
 		message(START_DESERIALIZE_FILES);
 		gists = glfm.readGists();
 		if (gists == null) {
@@ -125,7 +123,7 @@ public class GistManager {
 	 * @param key
 	 *            - gistId
 	 */
-	public void downloadGists(String key) {
+	public final void downloadGists(final String key) {
 		message(START_DOWNLOADING_FILES);
 		if (key.equals("all")) {
 			for (Gist gist : gists) {
@@ -142,8 +140,9 @@ public class GistManager {
 	 * 
 	 * @param key
 	 *            - gistId
+	 * @return gist - Gist item
 	 */
-	public Gist findGist(String key) {
+	public final Gist findGist(final String key) {
 		for (Gist gist : gists) {
 			if (gist.getId().equals(key)) {
 				return gist;
@@ -156,11 +155,9 @@ public class GistManager {
 	/**
 	 * Method print to console all loaded gists. Used
 	 * {@link com.oshmidt.GistManager#showGist(Gist)}
-	 * 
-	 * @param gist
-	 *            - Gist object {@link org.eclipse.egit.github.core.Gist}
 	 */
-	public void showGists() {
+
+	public final void showGists() {
 		if (gists != null) {
 			for (Gist gist : gists) {
 				showGist(gist);
@@ -171,12 +168,12 @@ public class GistManager {
 	}
 
 	/**
-	 * Method print to console gist info and his list files
+	 * Method print to console gist info and his list files.
 	 * 
 	 * @param gist
 	 *            - Gist object {@link org.eclipse.egit.github.core.Gist}
 	 */
-	public void showGist(Gist gist) {
+	public final void showGist(final Gist gist) {
 		System.out.println(SEPARATOR);
 		message(Messages.getString("com.oshmidt.gistManager.gistID")
 				+ gist.getId());
@@ -197,7 +194,7 @@ public class GistManager {
 	 * @param gist
 	 *            - Gist object {@link org.eclipse.egit.github.core.Gist}
 	 */
-	public void addNewGist(Gist gist) {
+	public final void addNewGist(final Gist gist) {
 		try {
 			message(NEW_GIST);
 			gistFetcher.addNewGist(user, gist);
@@ -207,9 +204,9 @@ public class GistManager {
 	}
 
 	/**
-	 * Method tries download gists from Github
+	 * Method tries download gists from Github.
 	 */
-	public void loadGists() {
+	public final void loadGists() {
 		try {
 			message(START_DOWNLOADING_GISTS);
 			gists = gistFetcher.loadGists(user);
@@ -219,13 +216,13 @@ public class GistManager {
 	}
 
 	/**
-	 * Method download Gist from Github by his ID;
+	 * Method download Gist from Github by his ID.
 	 * 
 	 * @param gistId
 	 *            - {@link org.eclipse.egit.github.core.Gist#getId()}
 	 * @return gist - Gist object {@link org.eclipse.egit.github.core.Gist}
 	 */
-	public Gist loadGist(String gistId) {
+	public final Gist loadGist(final String gistId) {
 		try {
 			message(START_DOWNLOADING_GIST);
 			return gistFetcher.loadGist(gistId, user);
@@ -241,7 +238,7 @@ public class GistManager {
 	 * @param gist
 	 *            - Gist object {@link org.eclipse.egit.github.core.Gist}
 	 */
-	public void updateGist(Gist gist) {
+	public final void updateGist(final Gist gist) {
 		try {
 			message(START_UPDATING_GIST);
 			gistFetcher.updateGist(user, gist);
@@ -258,7 +255,7 @@ public class GistManager {
 	 * @return true if deleting was without exception, false if server return
 	 *         IOException
 	 */
-	public boolean deleteGist(String gistId) {
+	public final boolean deleteGist(final String gistId) {
 		try {
 			message(START_DELETING_GIST);
 			gistFetcher.deleteGist(user, gistId);
@@ -269,9 +266,15 @@ public class GistManager {
 		}
 	}
 
-	private void message(String mes) {
-		logger.info(mes);
-		System.out.println(mes);
+	/**
+	 * Transmit message to logger and console.
+	 * 
+	 * @param message
+	 *            - String message
+	 */
+	private void message(final String message) {
+		logger.info(message);
+		System.out.println(message);
 	}
 
 }
