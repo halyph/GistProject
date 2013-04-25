@@ -22,3 +22,8 @@ Documentation:
 Tests:
 =========
 * Maven  `mvn test` run tests and create report to `gist-cli\target\surefire-reports\index.html`
+
+
+Code Coverage:
+=========
+*`mvn -DskipTests=true cobertura:cobertura` generate code coverage documentation by maven
