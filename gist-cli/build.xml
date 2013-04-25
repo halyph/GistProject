@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" default="build">
 
+	<taskdef resource="checkstyletask.properties" classpath="${checkstyle.jar}" />
 	<property file="build.properties" />
+
 
 	<target name="resolve" description="Resolve and Retrieve with ivy">
 		<ivy:resolve />
@@ -49,6 +51,8 @@
 	</target>
 
 
+
+
 	<target name="init-ivy" depends="download-ivy" description="Automatically ivy install">
 		<!-- try to load ivy here from ivy home, in case the user has not already dropped
               it into ant's lib dir (note that the latter copy will always take precedence).
@@ -68,15 +72,26 @@
 		<get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true" />
 	</target>
 
-	
-	
-	<target name="makedoc" description="Generating documentation" >  
-	  <javadoc destdir="${javadoc}">  
-	    <sourcepath location="${src.main.java}"/>  
-	    <classpath location="${build.classes}"/>  
-	  </javadoc>  
-	</target>  
-	
+
+
+	<target name="javadoc" description="Generating documentation">
+		<javadoc destdir="${javadoc}">
+			<sourcepath location="${src.main.java}" />
+			<classpath location="${build.classes}" />
+		</javadoc>
+	</target>
+
+
+
+
+	<target name="checkstyle" depends="resolve" description="Checks that we are using consistant well formed style.">
+		<mkdir dir="${build}" />
+		<checkstyle config="${checkstyle.config.file}" failOnViolation="false">
+			<fileset dir="${src.main}" includes="**/*.java" />
+			<formatter type="xml" toFile="${checkstyle.result.file}" />
+		</checkstyle>
+	</target>
+
 
 
 </project>
