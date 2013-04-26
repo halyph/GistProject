@@ -3,11 +3,16 @@ package com.oshmidt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.lang.reflect.Constructor;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import org.testng.annotations.Test;
 
+/**
+ * @author oshmidt
+ *Test for Messages.class
+ */
 public class MessagesTest {
 
     @Test
@@ -26,7 +31,6 @@ public class MessagesTest {
     }
 
     @Test
-    // (expectedExceptions = NullPointerException.class)
     public void testGetStringWithParameters() {
         String key1 = "com.oshmidt.cli.aplicationStartOption";
         int key2 = 2;
@@ -35,5 +39,21 @@ public class MessagesTest {
         String value2 = Messages.getString(key1, key2);
         assertEquals(value1, value2);
     }
+
+    @Test
+    public void testGetStringWithParametersInvalidKey() {
+        String key = "invalidKey";
+        int key2 = 2;
+        assertNotNull(Messages.getString(key), key2);
+    }
+
+
+    @Test
+    public void testIsPrivateConstructor() throws Exception {
+        Constructor<?>[] cons = Messages.class.getDeclaredConstructors();
+        cons[0].setAccessible(true);
+        cons[0].newInstance((Object[]) null);
+    }
+
 
 }

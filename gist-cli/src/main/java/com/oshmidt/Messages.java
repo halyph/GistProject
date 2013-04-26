@@ -47,10 +47,8 @@ public final class Messages {
      *@return string - parsed string
      */
     public static String getString(final String key, final Object... params) {
-        try {
-            return MessageFormat.format(RESOURCE_BUNDLE.getString(key), params);
-        } catch (MissingResourceException e) {
-            return '!' + key + '!';
-        }
+        String message = MessageFormat.format(RESOURCE_BUNDLE.getString(key), params);
+        return message;
     }
+
 }

@@ -1,8 +1,13 @@
 package com.oshmidt;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import java.lang.reflect.Constructor;
 import org.testng.annotations.Test;
 
+/**
+ * @author oshmidt
+ *Tests for StringUtils.class
+ */
 public class StringUtilsTest {
 
     @Test
@@ -11,9 +16,10 @@ public class StringUtilsTest {
         assertTrue(StringUtils.convertToString(arr, " ").equals("a b c d "));
     }
 
-    @Test(expectedExceptions = java.lang.IllegalAccessException.class)
-    public void testConvertToStringr() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Class<?> cls = Class.forName("com.oshmidt.StringUtils");
-        cls.newInstance();
+    @Test
+    public void testIsPrivateConstructor() throws Exception {
+        Constructor<?>[] cons = StringUtils.class.getDeclaredConstructors();
+        cons[0].setAccessible(true);
+        cons[0].newInstance((Object[]) null);
     }
 }
