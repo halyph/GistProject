@@ -6,6 +6,7 @@
 
 
 	<target name="resolve" description="Resolve and Retrieve with ivy">
+		<mkdir dir="${lib.dir}" />
 		<ivy:resolve />
 		<ivy:cachepath pathid="default.classpath" />
 		<ivy:retrieve sync="true" type="jar" />
@@ -14,6 +15,7 @@
 	<target name="compile" depends="resolve" description="Compile">
 		<mkdir dir="${build.classes}" />
 		<mkdir dir="${runnable.dir}" />
+
 		<javac srcdir="${src.main}/java" destdir="${build.classes}">
 			<classpath refid="default.classpath" />
 		</javac>
@@ -92,6 +94,34 @@
 		</checkstyle>
 	</target>
 
+
+	<path id="cobertura.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="cobertura-1.9.4.jar" />
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+
+	<target name="prepare_cobertura" depends="build">
+		<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+		<cobertura-instrument todir="${cobertura.instruments}">
+
+			<fileset dir="${build.classes}">
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+	<target name="cobertura" depends="prepare_cobertura">
+		<cobertura-report format="html" destdir="${cobertura.coveragereport}" >
+			<fileset dir="${src.main}">
+				<include name="**/*.java" />
+				<exclude name="**/*Stub.java" />
+			</fileset>
+		</cobertura-report>
+	</target>
 
 
 </project>
