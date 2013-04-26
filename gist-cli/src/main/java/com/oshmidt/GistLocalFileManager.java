@@ -26,229 +26,227 @@ import org.eclipse.egit.github.core.GistFile;
  *         <p>
  *         Class GistLocalRepository implementation. Created for store user data
  *         inside file system.
- * 
  */
 public class GistLocalFileManager extends GistLocalRepository {
-	
-	private static final String CANT_FOUND = Messages
-			.getString("com.oshmidt.gistManager.cantFound");
-	private static final String IO_PROBLEM = Messages
-			.getString("com.oshmidt.gistManager.IOProblem");
-	private static final String WRONG_TYPE = Messages
-			.getString("com.oshmidt.gistManager.wrongType");
-	private static final String DOWNLOAD_PROBLEM = Messages
-			.getString("com.oshmidt.gistManager.downloadProblem"); 
 
-	/** Default path for local repository. */
-	private static final String DEFAULT_PATH = "localRepository/";
+    private static final String CANT_FOUND = Messages
+            .getString("com.oshmidt.gistManager.cantFound");
+    private static final String IO_PROBLEM = Messages
+            .getString("com.oshmidt.gistManager.IOProblem");
+    private static final String WRONG_TYPE = Messages
+            .getString("com.oshmidt.gistManager.wrongType");
+    private static final String DOWNLOAD_PROBLEM = Messages
+            .getString("com.oshmidt.gistManager.downloadProblem");
+    private final int NUM = 24;
 
-	/** Extension for serialized gists. */
-	private static final String GIST_FILE_EXT = ".gist";
+    /** Default path for local repository. */
+    private static final String DEFAULT_PATH = "localRepository/";
 
-	/**
-	 * Logger instance.
-	 */
-	private static Logger logger = Logger.getLogger(GistLocalFileManager.class);
+    /** Extension for serialized gists. */
+    private static final String GIST_FILE_EXT = ".gist";
 
-	/**
-	 * Loading default value for "repoPath". Set default value for
-	 * {@link com.oshmidt.GistLocalRepository#repoPath} from
-	 * {@link com.oshmidt.GistLocalFileManager#DEFAULT_PATH}.
-	 */
-	public final void loadDefaultRepoPath() {
-		setRepoPath(DEFAULT_PATH);
-	}
+    /**
+     * Logger instance.
+     */
+    private static Logger logger = Logger.getLogger(GistLocalFileManager.class);
 
-	/**
-	 * GistRepository implementation. Deserialize gists from file system by
-	 * {@link com.oshmidt.GistLocalRepository#repoPath}
-	 * 
-	 * @return Deserialized gists.
-	 */
-	public final List<Gist> readGists() {
-		ArrayList<Gist> gists = new ArrayList<Gist>();
-		preparePath();
-		File file = new File(getRepoPath());
-		if (!file.exists()) {
-			return null;
-		}
-		FileFilter filter = createGistFilter();
-		for (File gst : file.listFiles(filter)) {
-			logger.info(gst.getName());
-			gists.add(deserializeGist(gst));
-		}
-		return gists;
-	}
+    /**
+     * Loading default value for "repoPath". Set default value for
+     * {@link com.oshmidt.GistLocalRepository#repoPath} from
+     * {@link com.oshmidt.GistLocalFileManager#DEFAULT_PATH}.
+     */
+    public final void loadDefaultRepoPath() {
+        setRepoPath(DEFAULT_PATH);
+    }
 
-	/**
-	 * @param gst
-	 *            - serialized gist file
-	 * @return - gist item
-	 */
-	private Gist deserializeGist(final File gst) {
-		FileInputStream fis;
-		ObjectInputStream oin;
-		try {
-			fis = new FileInputStream(gst);
-			oin = new ObjectInputStream(fis);
-			Gist gist = (Gist) oin.readObject();
-			oin.close();
-			return gist;
-		} catch (FileNotFoundException e) {
-			logger.error(e + CANT_FOUND);
-		} catch (IOException e) {
-			logger.error(e + IO_PROBLEM);
-		} catch (ClassNotFoundException e) {
-			logger.error(e + WRONG_TYPE);
-		}
-		return null;
-	}
+    /**
+     * GistRepository implementation. Deserialize gists from file system by
+     * {@link com.oshmidt.GistLocalRepository#repoPath}
+     *
+     * @return Deserialized gists.
+     */
+    public final List<Gist> readGists() {
+        ArrayList<Gist> gists = new ArrayList<Gist>();
+        preparePath();
+        File file = new File(getRepoPath());
+        if (!file.exists()) {
+            return null;
+        }
+        FileFilter filter = createGistFilter();
+        for (File gst : file.listFiles(filter)) {
+            logger.info(gst.getName());
+            gists.add(deserializeGist(gst));
+        }
+        return gists;
+    }
 
-	/**
-	 * GistRepository implementation. Serialize gists into file system to path
-	 * {@link com.oshmidt.GistLocalRepository#repoPath}
-	 * 
-	 * @param gists
-	 *            list.
-	 */
-	public final void writeGists(final List<Gist> gists) {
+    /**
+     * @param gst
+     *            - serialized gist file
+     * @return - gist item
+     */
+    private Gist deserializeGist(final File gst) {
+        FileInputStream fis;
+        ObjectInputStream oin;
+        try {
+            fis = new FileInputStream(gst);
+            oin = new ObjectInputStream(fis);
+            Gist gist = (Gist) oin.readObject();
+            oin.close();
+            return gist;
+        } catch (FileNotFoundException e) {
+            logger.error(e + CANT_FOUND);
+        } catch (IOException e) {
+            logger.error(e + IO_PROBLEM);
+        } catch (ClassNotFoundException e) {
+            logger.error(e + WRONG_TYPE);
+        }
+        return null;
+    }
 
-		for (Gist gist : gists) {
-			logger.info(gist.getId());
-			serializeGist(gist);
+    /**
+     * GistRepository implementation. Serialize gists into file system to path
+     * {@link com.oshmidt.GistLocalRepository#repoPath}
+     *
+     * @param gists
+     *            list.
+     */
+    public final void writeGists(final List<Gist> gists) {
 
-		}
-	}
+        for (Gist gist : gists) {
+            logger.info(gist.getId());
+            serializeGist(gist);
 
-	/**
-	 * @param gist
-	 *            - Gist item
-	 */
-	private void serializeGist(final Gist gist) {
-		try {
-			FileOutputStream fos;
-			safeMakeDir();
-			fos = new FileOutputStream(getRepoPath() + gist.getId()
-					+ GIST_FILE_EXT);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(gist);
-			oos.flush();
-			oos.close();
-		} catch (IOException e) {
-			logger.error(e + IO_PROBLEM);
-		}
-	}
+        }
+    }
 
-	/**
-	 * GistRepository implementation. Download Gist files to file system path
-	 * {@link com.oshmidt.GistLocalRepository#repoPath}
-	 * 
-	 * @param gist
-	 *            - Gist item.
-	 */
-	public final void writeFiles(final Gist gist) {
-		Map<String, GistFile> gistFiles = gist.getFiles();
-		Set<String> set = gistFiles.keySet();
-		for (String s : set) {
-			GistFile gf = gistFiles.get(s);
-			message(gf.getFilename());
-			downloadAndSaveGistFile(gf, gist);
-		}
-	}
-	
-	/**
-	 * @param gf - GistFile item
-	 * @param gist - Gist item
-	 */
-	private void downloadAndSaveGistFile(final GistFile gf, final Gist gist) {
-		URL website;
-		try {
-			website = new URL(gf.getRawUrl());
-			
-			ReadableByteChannel rbc = Channels.newChannel(website
-					.openStream());
-			setRepoPath(getRepoPath() + File.separator + gist.getId()
-					+ File.separator);
-			safeMakeDir();
-			
-			FileOutputStream fos = new FileOutputStream(new File(
-					getRepoPath(), gf.getFilename()));
-			fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-			
-			fos.close();
-			loadDefaultRepoPath();
-		} catch (MalformedURLException e) {
-			logger.error(e + DOWNLOAD_PROBLEM);
-		} catch (IOException e) {
-			logger.error(e + IO_PROBLEM);
-		}
-		
-	}
+    /**
+     * @param gist
+     *            - Gist item
+     */
+    private void serializeGist(final Gist gist) {
+        try {
+            FileOutputStream fos;
+            safeMakeDir();
+            fos = new FileOutputStream(getRepoPath() + gist.getId()
+                    + GIST_FILE_EXT);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(gist);
+            oos.flush();
+            oos.close();
+        } catch (IOException e) {
+            logger.error(e + IO_PROBLEM);
+        }
+    }
 
-	/**
-	 * Download Gists files to file system path.
-	 * {@link com.oshmidt.GistLocalRepository#repoPath}
-	 * 
-	 * @param gists
-	 *            list.
-	 */
-	public final void writeFiles(final List<Gist> gists) {
-		for (Gist gist : gists) {
-			writeFiles(gist);
-		}
-	}
+    /**
+     * GistRepository implementation. Download Gist files to file system path
+     * {@link com.oshmidt.GistLocalRepository#repoPath}
+     *
+     * @param gist
+     *            - Gist item.
+     */
+    public final void writeFiles(final Gist gist) {
+        Map<String, GistFile> gistFiles = gist.getFiles();
+        Set<String> set = gistFiles.keySet();
+        for (String s : set) {
+            GistFile gf = gistFiles.get(s);
+            message(gf.getFilename());
+            downloadAndSaveGistFile(gf, gist);
+        }
+    }
 
-	/**
-	 * GistRepository implementation. NOT IMPLEMENTED !
-	 * 
-	 * @return null
-	 */
-	public final Map<Gist, List<GistFile>> readFiles() {
-		return null;
-	}
+    /**
+     * @param gf
+     *            - GistFile item
+     * @param gist
+     *            - Gist item
+     */
+    private void downloadAndSaveGistFile(final GistFile gf, final Gist gist) {
+        URL website;
+        try {
+            website = new URL(gf.getRawUrl());
+            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            setRepoPath(getRepoPath() + File.separator + gist.getId()
+                    + File.separator);
+            safeMakeDir();
+            FileOutputStream fos = new FileOutputStream(new File(getRepoPath(),
+                    gf.getFilename()));
+            fos.getChannel().transferFrom(rbc, 0, 1 << NUM);
 
-	/**
-	 * Method create and return file filter for serialized gists.
-	 * 
-	 * @return FileFilter
-	 */
-	private FileFilter createGistFilter() {
-		FileFilter ff = new FileFilter() {
-			public boolean accept(final File f) {
-				return f.isFile() && f.getName().endsWith(GIST_FILE_EXT);
-			}
-		};
-		return ff;
-	}
+            fos.close();
+            loadDefaultRepoPath();
+        } catch (MalformedURLException e) {
+            logger.error(e + DOWNLOAD_PROBLEM);
+        } catch (IOException e) {
+            logger.error(e + IO_PROBLEM);
+        }
+    }
 
-	/**
-	 * Method create repository directory if it not exist.
-	 */
-	private void safeMakeDir() {
-		preparePath();
-		File dir = new File(getRepoPath());
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
-	}
+    /**
+     * Download Gists files to file system path.
+     * {@link com.oshmidt.GistLocalRepository#repoPath}
+     *
+     * @param gists
+     *            list.
+     */
+    public final void writeFiles(final List<Gist> gists) {
+        for (Gist gist : gists) {
+            writeFiles(gist);
+        }
+    }
 
-	/**
-	 * Method check availability repoPath field and set it to default if needed.
-	 */
-	private void preparePath() {
-		if (getRepoPath() == null) {
-			loadDefaultRepoPath();
-		}
-	}
+    /**
+     * GistRepository implementation. NOT IMPLEMENTED !
+     *
+     * @return null
+     */
+    public final Map<Gist, List<GistFile>> readFiles() {
+        return null;
+    }
 
-	/**
-	 * Transmit message to logger and console.
-	 * 
-	 * @param mes
-	 *            - String message
-	 */
-	private void message(final String mes) {
-		logger.info(mes);
-		System.out.println(mes);
-	}
+    /**
+     * Method create and return file filter for serialized gists.
+     *
+     * @return FileFilter
+     */
+    private FileFilter createGistFilter() {
+        FileFilter ff = new FileFilter() {
+            public boolean accept(final File f) {
+                return f.isFile() && f.getName().endsWith(GIST_FILE_EXT);
+            }
+        };
+        return ff;
+    }
+
+    /**
+     * Method create repository directory if it not exist.
+     */
+    private void safeMakeDir() {
+        preparePath();
+        File dir = new File(getRepoPath());
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+    }
+
+    /**
+     * Method check availability repoPath field and set it to default if needed.
+     */
+    private void preparePath() {
+        if (getRepoPath() == null) {
+            loadDefaultRepoPath();
+        }
+    }
+
+    /**
+     * Transmit message to logger and console.
+     *
+     * @param mes
+     *            - String message
+     */
+    private void message(final String mes) {
+        logger.info(mes);
+        System.out.println(mes);
+    }
 }
