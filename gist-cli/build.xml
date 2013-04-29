@@ -114,7 +114,7 @@
 		</cobertura-instrument>
 	</target>
 
-	<target name="cobertura" depends="prepare_cobertura">
+	<target name="cobertura" depends="prepare_cobertura"  description="create code coverage report">
 		<cobertura-report format="html" destdir="${cobertura.coveragereport}" >
 			<fileset dir="${src.main}">
 				<include name="**/*.java" />
