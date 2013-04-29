@@ -15,11 +15,19 @@ import org.eclipse.egit.github.core.service.GistService;
  * @see org.eclipse.egit.github.core.service.GistService;
  */
 public class GistFetcher {
+    private final GistService service;
+
+    public GistFetcher() {
+        this.service = new GistService();
+    }
+
+    public GistFetcher(GistService service) {
+        this.service = service;
+    }
 
      /**
       * local GistService instance.
       */
-     private GistService service = new GistService();
 
      /**Setting credentials for github.
       * @param user - {@link com.oshmidt.User}
