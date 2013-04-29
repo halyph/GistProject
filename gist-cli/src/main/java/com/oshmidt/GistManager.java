@@ -48,6 +48,10 @@ public class GistManager {
 
     private User user;
 
+    public User getUser() {
+        return user;
+    }
+
     private Logger logger;
 
     /** GistManager constructor. Initialize self component. */
@@ -79,7 +83,6 @@ public class GistManager {
         if (!user.importUser()) {
             System.out.println(Messages
                     .getString("com.oshmidt.gistManager.userDataFileProblem"));
-            System.exit(0);
         }
     }
 
@@ -194,6 +197,7 @@ public class GistManager {
      *@param gist
      *           - Gist object {@link org.eclipse.egit.github.core.Gist}
      */
+    @Deprecated
     public final void addNewGist(final Gist gist) {
         try {
             message(NEW_GIST);
@@ -238,6 +242,7 @@ public class GistManager {
      *@param gist
      *           - Gist object {@link org.eclipse.egit.github.core.Gist}
      */
+    @Deprecated
     public final void updateGist(final Gist gist) {
         try {
             message(START_UPDATING_GIST);
@@ -255,6 +260,7 @@ public class GistManager {
      *@return true if deleting was without exception, false if server return
      *        IOException
      */
+    @Deprecated
     public final boolean deleteGist(final String gistId) {
         try {
             message(START_DELETING_GIST);
