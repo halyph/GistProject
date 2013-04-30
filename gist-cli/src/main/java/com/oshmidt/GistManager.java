@@ -48,10 +48,6 @@ public class GistManager {
 
     private User user;
 
-    public User getUser() {
-        return user;
-    }
-
     private Logger logger;
 
     /** GistManager constructor. Initialize self component. */

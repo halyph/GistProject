@@ -1,53 +1,88 @@
 package com.oshmidt;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.awt.List;
 import java.io.IOException;
 
 import org.eclipse.egit.github.core.Gist;
+import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.GistService;
-import org.junit.Before;
-import org.junit.Test;
+import org.mockito.Mock;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class GistFetcherTest {
 
-    // @Mock
+    @Mock
     private GistService service;
+    @Mock
+    private GitHubClient gc;
+    
+    private static String DESCRIPTION = "test gist";
+    
+    private User user;
 
-    @Before
+    private GistFetcher gf;
+    
+    private Gist gist; 
+    
+    private List list;
+    
+    @BeforeMethod
     public void before() throws IOException {
+        user = new User();
+        user.setLogin("login");
+        user.setPassword("password");
         service = mock(GistService.class);
-        Gist g = new Gist();
-        g.setDescription("test gist");
-        // service.getClient().setCredentials(user.getLogin(),
-        // user.getPassword());
-        when(service.getGist("f")).thenReturn(g);
-        // GitHubClient gc = new GitHubClient();
-        // when(service.getClient().thenReturn(gc));
-        // service.getClient()g.th;
+        gc = mock(GitHubClient.class);
+        gist = new Gist();
+        gist.setDescription(DESCRIPTION);
+       
+       // list.add(gist);
+        
+        when(service.getGist("test")).thenReturn(gist);
+        when(service.updateGist(gist)).thenReturn(gist);
+     //   when(service.getGists(user.getLogin()).thenReturn(list);
+        when(service.createGist(gist)).thenReturn(gist);
+        //when(service.deleteGist("test")).thenThrow();
+        when(service.getClient()).thenReturn(gc);
+        when(gc.setCredentials(user.getLogin(), user.getPassword())).thenReturn(gc);
+        gf = new GistFetcher(service);
     }
 
     @Test
-    public void getGist() throws IOException {
-        System.out.println(service);
-
-        GistFetcher gf = new GistFetcher(service);
-        User user = new User();
-        user.setLogin("login");
-        user.setPassword("password");
-
-        System.out.println(user.getLogin());
-        System.out.println(user.getPassword());
-        gf.loadGist("f", user);
-        Gist g = gf.loadGist("f", user);
-        System.out.println(g.getDescription());
+    public void testGetGist() throws IOException { 
+        Gist g = gf.loadGist("test", user);
+        assertEquals(gist, g); 
     }
+    
+    
+    
+    @Test
+    public void testAddNewGist() throws IOException{
+        Gist g = gf.addNewGist(user, gist);
+        assertEquals(gist, g); 
+    }
+    
+    
+    @Test
+    public void testUpdateGist() throws IOException { 
+        Gist g = gf.updateGist(user, gist);
+        assertEquals(DESCRIPTION, g.getDescription()); 
+    }
+    
+    @Test
+    public void testDeleteGist() throws IOException{ 
+        gf.deleteGist(user, "test");
+    }
+    
+  /*  @Test
+    public void testLoadGists() throws IOException {
+        System.out.println(gf.loadGists(user));
+    }*/
 
-    /*
-     * public final Gist loadGist(final String gistId, final User user) throws
-     * IOException { setClientCredentials(user); return service.getGist(gistId);
-     * }
-     */
 
 }
