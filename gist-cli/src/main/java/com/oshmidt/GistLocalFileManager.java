@@ -87,21 +87,36 @@ public class GistLocalFileManager extends GistLocalRepository {
      */
     private Gist deserializeGist(final File gst) {
         FileInputStream fis;
-        ObjectInputStream oin;
+        ObjectInputStream oin = null;
+ //       Throwable throwable = null;
+        Gist gist = null;
         try {
             fis = new FileInputStream(gst);
             oin = new ObjectInputStream(fis);
-            Gist gist = (Gist) oin.readObject();
-            oin.close();
+            gist = (Gist) oin.readObject();
             return gist;
         } catch (FileNotFoundException e) {
+ //           throwable = e;
             logger.error(e + CANT_FOUND);
         } catch (IOException e) {
+ //           throwable = e;
             logger.error(e + IO_PROBLEM);
         } catch (ClassNotFoundException e) {
+ //           throwable = e;
             logger.error(e + WRONG_TYPE);
+        }  finally {
+//            if (throwable == null) {
+//                oin.close();
+//            }
+//            else {
+                try {
+                   oin.close();
+                } catch (Throwable unused) {
+                    logger.error(unused);
+//                }
+            }
         }
-        return null;
+        return gist;
     }
 
     /**
