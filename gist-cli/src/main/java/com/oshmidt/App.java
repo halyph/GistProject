@@ -113,7 +113,7 @@ public final class App {
             gistManager.downloadGists(cmd.getOptionValue(DOWNLOAD_FILES_LONG));
         }
 
-        if (cmd.hasOption(HELP_SHORT)) {
+        if (cmd.hasOption(HELP_SHORT) || (cmd.getOptions().length == 0)) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(SHORT_DESCRIPTION, HELP_TITLE, initOptions(),
                     HELP_DEVELOPED_BY);

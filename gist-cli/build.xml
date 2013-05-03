@@ -6,6 +6,7 @@
 
 
 	<target name="resolve" description="Resolve and Retrieve with ivy">
+		<ivy:settings file="ivysettings.xml" />
 		<mkdir dir="${lib.dir}" />
 		<ivy:resolve />
 		<ivy:cachepath pathid="default.classpath" />
@@ -85,14 +86,31 @@
 
 
 
+	<target name="checkstyle" description="Generates a report of code convention violations." depends="init-checkstyle">
+		<!-- See http://checkstyle.sourceforge.net/anttask.html for full options of using checkstyle with ant-->
+		<mkdir dir="${build}" />
+		<checkstyle config="${checkstyle.config.file}" failureProperty="checkstyle.failure" failOnViolation="false">
+			
+			<formatter type="xml" tofile="${checkstyle.result.file}" />
+			<fileset dir="${src.main}" includes="**/*.java" />
+		</checkstyle>
+	</target>
 
-	<target name="checkstyle" depends="resolve" description="Checks that we are using consistant well formed style.">
+	<target name="init-checkstyle" depends="resolve">
+		<path id="checkstyle.lib.path">
+			<fileset dir="${lib.dir}" includes="*.jar" />
+		</path>
+		<!-- Sevntu custom checks are retrieved by Ivy into lib folder and will be accessible to checkstyle-->
+		<taskdef resource="checkstyletask.properties" classpathref="checkstyle.lib.path" />
+	</target>
+
+	<!--target name="checkstyle" depends="resolve" description="Checks that we are using consistant well formed style.">
 		<mkdir dir="${build}" />
 		<checkstyle config="${checkstyle.config.file}" failOnViolation="false">
 			<fileset dir="${src.main}" includes="**/*.java" />
 			<formatter type="xml" toFile="${checkstyle.result.file}" />
 		</checkstyle>
-	</target>
+	</target-->
 
 
 	<path id="cobertura.classpath">
@@ -114,8 +132,8 @@
 		</cobertura-instrument>
 	</target>
 
-	<target name="cobertura" depends="prepare_cobertura"  description="create code coverage report">
-		<cobertura-report format="html" destdir="${cobertura.coveragereport}" >
+	<target name="cobertura" depends="prepare_cobertura" description="create code coverage report">
+		<cobertura-report format="html" destdir="${cobertura.coveragereport}">
 			<fileset dir="${src.main}">
 				<include name="**/*.java" />
 				<exclude name="**/*Stub.java" />
