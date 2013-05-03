@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.awt.List;
 import java.io.IOException;
 
 import org.eclipse.egit.github.core.Gist;
@@ -29,7 +28,7 @@ public class GistFetcherTest {
     
     private Gist gist; 
     
-    private List list;
+  //  private List list;
     
     @BeforeMethod
     public void before() throws IOException {
