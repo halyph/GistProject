@@ -38,12 +38,16 @@ public class GistLocalFileManager extends GistLocalRepository {
     private static final String DOWNLOAD_PROBLEM = Messages
             .getString("com.oshmidt.gistManager.downloadProblem");
     private final int NUM = 24;
+    
+    private ObjectInputStream oin;
 
     /** Default path for local repository. */
     private static final String DEFAULT_PATH = "localRepository/";
 
     /** Extension for serialized gists. */
     private static final String GIST_FILE_EXT = ".gist";
+    
+    private File gistFolder;
 
     /**
      * Logger instance.
@@ -68,12 +72,12 @@ public class GistLocalFileManager extends GistLocalRepository {
     public final List<Gist> readGists() {
         ArrayList<Gist> gists = new ArrayList<Gist>();
         preparePath();
-        File file = new File(getRepoPath());
-        if (!file.exists()) {
+        gistFolder = new File(getRepoPath());
+        if (!gistFolder.exists()) {
             return null;
         }
         FileFilter filter = createGistFilter();
-        for (File gst : file.listFiles(filter)) {
+        for (File gst : gistFolder.listFiles(filter)) {
             logger.info(gst.getName());
             gists.add(deserializeGist(gst));
         }
@@ -87,7 +91,7 @@ public class GistLocalFileManager extends GistLocalRepository {
      */
     private Gist deserializeGist(final File gst) {
         FileInputStream fis;
-        ObjectInputStream oin = null;
+        oin = null;
  //       Throwable throwable = null;
         Gist gist = null;
         try {
