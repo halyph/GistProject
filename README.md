@@ -1,4 +1,4 @@
-Info:
+﻿Info:
 =========
 Project created for simplification access to Github gist.
 
@@ -10,12 +10,14 @@ For build, inside gist-cli folder type:`ant` for build project by Ant or type:`m
 
 Сommands:
 =========
-* `java –jar gist-cli.jar –d` the same behavior as previously command if exist inside working directory user property file (“config.properties”)
+* `java –jar gist-cli.jar –u username -p password` download and save gists from github by user username and password
+* `java –jar gist-cli.jar –r` the same behavior as previously command if exist inside working directory user property file (“config.properties”)
+* `java –jar gist-cli.jar –l` use local saved data as work data
 * `java –jar gist-cli.jar –h` show command list
 * `java –jar gist-cli.jar –show gistId` show gist info by ID
 * `java –jar gist-cli.jar –show all` show all user gists info
-* `java –jar gist-cli.jar –download gistId` download gist files by gistId into work directory (/localRepository/’gistId’/)
-* `java –jar gist-cli.jar –download all` download all gists files into work directory  (/localRepository/’gistId’/)
+* `java –jar gist-cli.jar –d gistId` download gist files by gistId into work directory (/localRepository/’gistId’/)
+* `java –jar gist-cli.jar –d all` download all gists files into work directory  (/localRepository/’gistId’/)
 
 
 Documentation:
