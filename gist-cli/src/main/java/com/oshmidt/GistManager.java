@@ -44,18 +44,50 @@ public class GistManager {
 
     private GistFetcher gistFetcher;
 
-    private GistRepository glfm;
+    private GistRepository repository;
+
+    public GistFetcher getGistFetcher() {
+        return gistFetcher;
+    }
+
+    public void setGistFetcher(GistFetcher gistFetcher) {
+        this.gistFetcher = gistFetcher;
+    }
+
+    public GistRepository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(GistRepository glfm) {
+        this.repository = glfm;
+    }
 
     private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     private Logger logger;
 
     /** GistManager constructor. Initialize self component. */
     public GistManager() {
+        try {
+
         user = new User();
         logger = Logger.getLogger(GistManager.class);
         gistFetcher = new GistFetcher();
-        glfm = new GistLocalFileManager();
+        repository = new GistLocalFileManager();
+        
+    } catch (Exception e) {
+        System.out.println("gist manager constructor");
+        e.printStackTrace();
+    }
+        
     }
 
     /**
@@ -98,8 +130,8 @@ public class GistManager {
      */
     public final void writeLocalGists() {
         message(START_SERIALIZE_FILES);
-        if (!(gists == null)) {
-            glfm.writeGists(gists);
+        if (gists != null) {
+            repository.writeGists(gists);
         }
     }
 
@@ -109,7 +141,7 @@ public class GistManager {
      */
     public final void readLocalGists() {
         message(START_DESERIALIZE_FILES);
-        gists = glfm.readGists();
+        gists = repository.readGists();
         if (gists == null) {
             message(DESERIALIZE_GISTS_FAIL);
         }
@@ -126,10 +158,10 @@ public class GistManager {
         message(START_DOWNLOADING_FILES);
         if (key.equals("all")) {
             for (Gist gist : gists) {
-                glfm.writeFiles(gist);
+                repository.writeFiles(gist);
             }
         } else {
-            glfm.writeFiles(findGist(key));
+            repository.writeFiles(findGist(key));
         }
     }
 
@@ -206,13 +238,14 @@ public class GistManager {
     /**
      *Method tries download gists from Github.
      */
-    public final void loadGists() {
+    public final List<Gist> loadGists() {
         try {
             message(START_DOWNLOADING_GISTS);
             gists = gistFetcher.loadGists(user);
         } catch (IOException e) {
             logger.error(e);
         }
+        return gists;
     }
 
     /**
@@ -238,7 +271,6 @@ public class GistManager {
      *@param gist
      *           - Gist object {@link org.eclipse.egit.github.core.Gist}
      */
-    @Deprecated
     public final void updateGist(final Gist gist) {
         try {
             message(START_UPDATING_GIST);
