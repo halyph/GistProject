@@ -49,9 +49,17 @@ public final class App {
             .getString("com.oshmidt.cli.long.showLocalGists");
     private static final String SHOW_LOCAL_GISTS_DESCRIPTION = Messages
             .getString("com.oshmidt.cli.description.showLocalGists");
+    
+    private static final String USE_LOCAL_GISTS_SHORT = Messages
+            .getString("com.oshmidt.cli.short.useLocalData");
+    private static final String USE_LOCAL_GISTS_DESCRIPTION = Messages
+            .getString("com.oshmidt.cli.description.useLocalData");
+            
 
     private static final String DOWNLOAD_FILES_LONG = Messages
             .getString("com.oshmidt.cli.long.downloadFiles");
+    private static final String DOWNLOAD_FILES_SHORT = Messages
+            .getString("com.oshmidt.cli.short.downloadFiles");
     private static final String DOWNLOAD_FILES_DESCRIPTION = Messages
             .getString("com.oshmidt.cli.description.downloadFiles");
 
@@ -98,19 +106,20 @@ public final class App {
             return;
         }
         if (cmd.hasOption(USERNAME_SHORT) && cmd.hasOption(PASSWORD_SHORT)) {
-
             gistManager.initUser(cmd.getOptionValue(USERNAME_SHORT),
                     cmd.getOptionValue(PASSWORD_SHORT));
             gistManager.loadAndSaveRemoteGists();
         } else if (cmd.hasOption(DOWNLOAD_GISTS_SHORT)) {
             gistManager.importUser();
             gistManager.loadAndSaveRemoteGists();
-        } else {
+        } else if (cmd.hasOption(USE_LOCAL_GISTS_SHORT)) {
             gistManager.readLocalGists();
         }
 
         if (cmd.hasOption(DOWNLOAD_FILES_LONG)) {
             gistManager.downloadGists(cmd.getOptionValue(DOWNLOAD_FILES_LONG));
+        } else if (cmd.hasOption(DOWNLOAD_FILES_SHORT)) {
+            gistManager.downloadGists(cmd.getOptionValue(DOWNLOAD_FILES_SHORT));
         }
 
         if (cmd.hasOption(HELP_SHORT) || (cmd.getOptions().length == 0)) {
@@ -140,8 +149,9 @@ public final class App {
                 DOWNLOAD_GISTS_DESCRIPTION);
         options.addOption(SHOW_LOCAL_GISTS_LONG, true,
                 SHOW_LOCAL_GISTS_DESCRIPTION);
-        options.addOption(DOWNLOAD_FILES_LONG, true, DOWNLOAD_FILES_DESCRIPTION);
+        options.addOption(DOWNLOAD_FILES_SHORT, DOWNLOAD_FILES_LONG, true, DOWNLOAD_FILES_DESCRIPTION);
         options.addOption(HELP_SHORT, HELP_LONG, false, HELP_DESCRIPTION);
+        options.addOption(USE_LOCAL_GISTS_SHORT, false, USE_LOCAL_GISTS_DESCRIPTION);
         return options;
 
     }
