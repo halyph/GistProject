@@ -174,11 +174,11 @@ public class GistManager {
      */
     public final void showGist(final Gist gist) {
         System.out.println(SEPARATOR);
-        message(Messages.getString("com.oshmidt.gistManager.gistID")
-                + gist.getId());
+        message(Messages.getString("com.oshmidt.gistManager.gistID", gist.getId(), gist.getDescription()));
 
         Set<String> sett = gist.getFiles().keySet();
         int i = 0;
+        message(Messages.getString("com.oshmidt.gistManager.gistFiles"));
         for (String s : sett) {
             GistFile gf = gist.getFiles().get(s);
             i++;
