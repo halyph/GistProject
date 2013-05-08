@@ -59,8 +59,13 @@ public class GistLocalFileManager extends GistLocalRepository {
      * {@link com.oshmidt.GistLocalRepository#repoPath} from
      * {@link com.oshmidt.GistLocalFileManager#DEFAULT_PATH}.
      */
-    public final void loadDefaultRepoPath() {
+    public void loadDefaultRepoPath() {
         setRepoPath(DEFAULT_PATH);
+    }
+    
+    
+    public File gistFileFactory(String s){
+        return new File(s);
     }
 
     /**
@@ -69,34 +74,49 @@ public class GistLocalFileManager extends GistLocalRepository {
      *
      * @return Deserialized gists.
      */
-    public final List<Gist> readGists() {
+    public List<Gist> readGists() {
         ArrayList<Gist> gists = new ArrayList<Gist>();
         preparePath();
-        gistFolder = new File(getRepoPath());
+        gistFolder = gistFileFactory(getRepoPath());
+        System.out.println("333!!!!!!!!!!!!!!!!!!!!!!!!!!"  + gistFolder.getName());
         if (!gistFolder.exists()) {
             return null;
         }
         FileFilter filter = createGistFilter();
+        System.out.println("ccfcfc" + gistFolder.listFiles(filter));
         for (File gst : gistFolder.listFiles(filter)) {
+            System.out.println("name " + gst.getName());
             logger.info(gst.getName());
             gists.add(deserializeGist(gst));
         }
         return gists;
     }
 
+    
+    public FileInputStream fileInputStreamFactory(File gst) throws FileNotFoundException{
+        FileInputStream f = new FileInputStream(gst);
+        return f;
+    }
+    
+    
+    public ObjectInputStream objectInputStreamFactory(FileInputStream is) throws IOException{
+        return new ObjectInputStream(is);
+    }
+    
+    
     /**
      * @param gst
      *            - serialized gist file
      * @return - gist item
      */
-    private Gist deserializeGist(final File gst) {
+    private Gist deserializeGist(File gst) {
         FileInputStream fis;
         oin = null;
  //       Throwable throwable = null;
         Gist gist = null;
         try {
-            fis = new FileInputStream(gst);
-            oin = new ObjectInputStream(fis);
+            fis = fileInputStreamFactory(gst);
+            oin = objectInputStreamFactory(fis);
             gist = (Gist) oin.readObject();
             return gist;
         } catch (FileNotFoundException e) {
@@ -130,7 +150,7 @@ public class GistLocalFileManager extends GistLocalRepository {
      * @param gists
      *            list.
      */
-    public final void writeGists(final List<Gist> gists) {
+    public void writeGists(List<Gist> gists) {
 
         for (Gist gist : gists) {
             logger.info(gist.getId());
@@ -143,7 +163,7 @@ public class GistLocalFileManager extends GistLocalRepository {
      * @param gist
      *            - Gist item
      */
-    private void serializeGist(final Gist gist) {
+    private void serializeGist(Gist gist) {
         try {
             FileOutputStream fos;
             safeMakeDir();
@@ -165,7 +185,7 @@ public class GistLocalFileManager extends GistLocalRepository {
      * @param gist
      *            - Gist item.
      */
-    public final void writeFiles(final Gist gist) {
+    public void writeFiles(Gist gist) {
         Map<String, GistFile> gistFiles = gist.getFiles();
         Set<String> set = gistFiles.keySet();
         for (String s : set) {
@@ -181,7 +201,7 @@ public class GistLocalFileManager extends GistLocalRepository {
      * @param gist
      *            - Gist item
      */
-    private void downloadAndSaveGistFile(final GistFile gf, final Gist gist) {
+    private void downloadAndSaveGistFile(GistFile gf, Gist gist) {
         URL website;
         try {
             website = new URL(gf.getRawUrl());
@@ -209,7 +229,7 @@ public class GistLocalFileManager extends GistLocalRepository {
      * @param gists
      *            list.
      */
-    public final void writeFiles(final List<Gist> gists) {
+    public void writeFiles(List<Gist> gists) {
         for (Gist gist : gists) {
             writeFiles(gist);
         }
@@ -220,7 +240,8 @@ public class GistLocalFileManager extends GistLocalRepository {
      *
      * @return null
      */
-    public final Map<Gist, List<GistFile>> readFiles() {
+    @Deprecated
+    public Map<Gist, List<GistFile>> readFiles() {
         return null;
     }
 
@@ -229,9 +250,9 @@ public class GistLocalFileManager extends GistLocalRepository {
      *
      * @return FileFilter
      */
-    private FileFilter createGistFilter() {
+    public FileFilter createGistFilter() {
         FileFilter ff = new FileFilter() {
-            public boolean accept(final File f) {
+            public boolean accept(File f) {
                 return f.isFile() && f.getName().endsWith(GIST_FILE_EXT);
             }
         };
@@ -264,7 +285,7 @@ public class GistLocalFileManager extends GistLocalRepository {
      * @param mes
      *            - String message
      */
-    private void message(final String mes) {
+    private void message(String mes) {
         logger.info(mes);
         System.out.println(mes);
     }

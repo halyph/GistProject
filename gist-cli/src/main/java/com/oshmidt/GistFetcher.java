@@ -45,7 +45,7 @@ public class GistFetcher {
       * @return gist - copy added gist
       * @throws IOException
       */
-     public final Gist addNewGist(final User user, final Gist gist)
+     public Gist addNewGist(final User user, final Gist gist)
                throws IOException {
           setClientCredentials(user);
           return service.createGist(gist);
@@ -67,7 +67,7 @@ public class GistFetcher {
       * @return Gist - {@link org.eclipse.egit.github.core.Gist}
       * @throws IOException
       */
-     public final Gist loadGist(final String gistId, final User user) throws IOException {
+     public Gist loadGist(final String gistId, final User user) throws IOException {
           setClientCredentials(user);
           return service.getGist(gistId);
      }
@@ -78,7 +78,7 @@ public class GistFetcher {
       * @return {@link org.eclipse.egit.github.core.Gist}
       * @throws IOException
       */
-     public final Gist updateGist(final User user, final Gist gist) throws IOException {
+     public Gist updateGist(final User user, final Gist gist) throws IOException {
           setClientCredentials(user);
           return service.updateGist(gist);
      }
@@ -88,9 +88,10 @@ public class GistFetcher {
       * @param gistId - {@link org.eclipse.egit.github.core.Gist#gistID}
       * @throws IOException
       */
-     public final void deleteGist(final User user, final String gistId) throws IOException {
+     public Boolean deleteGist(final User user, final String gistId) throws IOException {
           setClientCredentials(user);
           service.deleteGist(gistId);
+          return true;
      }
 
      /**
@@ -98,10 +99,11 @@ public class GistFetcher {
       * @param gists - {@link org.eclipse.egit.github.core.Gist}
       * @throws IOException
       */
-     public final void deleteGists(final User user, final List<Gist> gists) throws IOException {
+     public Boolean deleteGists(final User user, final List<Gist> gists) throws IOException {
           for (Gist gist : gists) {
                deleteGist(user, gist.getId());
           }
+          return true;
      }
 
 }

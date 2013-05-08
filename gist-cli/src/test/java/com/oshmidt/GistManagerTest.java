@@ -1,6 +1,8 @@
 package com.oshmidt;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,7 +15,6 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-
 public class GistManagerTest {
 
     private GistManager gistManager;
@@ -21,23 +22,49 @@ public class GistManagerTest {
     @Mock
     private User user;
 
+    /*
+     * @Mock private GistFetcher gf;
+     */
+
     @Mock
-    private GistFetcher gf;
+    private GistFetcher fetcherMock;
+
+    @Mock
+    private GistRepository repository;
+
+    List<Gist> arrayList;
+
+    private static final String GIST_ID = "gistID";
+
+    private Gist testGist;
 
     @BeforeMethod
     public void before() throws IOException {
-        System.out.println("before block");
-
         gistManager = new GistManager();
-     /*   user = new User();
-        user.setLogin("login");
-        user.setPassword("password");*/
-        
-         user = mock(User.class);
-     //    when(user.getLogin()).thenReturn(s); System.out.println("4");
-   //      when(user.getPassword()).thenReturn(null); System.out.println("5");
-    //     when(user.importUser()).thenReturn(null); System.out.println("6");
-         
+        testGist = new Gist();
+        fetcherMock = mock(GistFetcher.class);
+        gistManager.setGistFetcher(fetcherMock);
+        repository = mock(GistRepository.class);
+        gistManager.setRepository(repository);
+        arrayList = new ArrayList<Gist>();
+        for (int i = 0; i < 5; i++) {
+            Gist g = mock(Gist.class);
+            when(g.getDescription()).thenReturn(Integer.toString(i));
+            when(g.getId()).thenReturn(Integer.toString(i));
+            when(g.getFiles()).thenReturn(null);
+            /*
+             * Map<String, GistFile> files = new HashMap<>(); for (int j = 0; j
+             * < 3; j++){ GistFile gf = new GistFile();
+             * files.put(Integer.toString(j), gf); } g.setFiles(files);
+             */
+            arrayList.add(g);
+        }
+        user = mock(User.class);
+        when(fetcherMock.loadGists(user)).thenReturn(arrayList);
+        when(fetcherMock.loadGist(GIST_ID, user)).thenReturn(new Gist());
+        when(fetcherMock.updateGist(user, testGist)).thenReturn(testGist);
+        when(fetcherMock.deleteGist(user, GIST_ID)).thenReturn(true);
+        when(fetcherMock.deleteGists(user, arrayList)).thenReturn(true);
     }
 
     @Test
@@ -52,39 +79,88 @@ public class GistManagerTest {
         gistManager.importUser();
     }
 
-    /*
-     * @Test public void testReadAndWriteLocalGists() { GistRepository glfm =
-     * mock(GistRepository.class); when(glfm.readGists()).thenReturn(null);
-     * 
-     * gm.setRepository(glfm); gm.readLocalGists(); ArrayList<Gist> list = new
-     * ArrayList<Gist>(); for (int i = 0; i < 5; i++) { list.add(new Gist()); }
-     * when(glfm.readGists()).thenReturn(list); gm.readLocalGists();
-     * gm.showGists(); }
-     */
+    @Test
+    public void testReadAndWriteLocalGists() {
+        gistManager.showGists();
+        when(repository.readGists()).thenReturn(null);
+        gistManager.readLocalGists();
+        when(repository.readGists()).thenReturn(arrayList);
+        gistManager.readLocalGists();
+        gistManager.showGists();
+    }
 
     @Test
-    public void testLoadGists() throws IOException {
-        System.out.println("testLoadGists");
-        GistFetcher fetcherMock = mock(GistFetcher.class);
-        ArrayList<Gist> list = new ArrayList<Gist>();
-        for (int i = 0; i < 5; i++) {
-            list.add(new Gist());
-        }
-
-        try {
-            when(fetcherMock.loadGists(user)).thenReturn(list);
-        } catch (Exception e) {
-            System.out.println("init mock behavior");
-            e.printStackTrace();
-        }
-
-        gistManager.setGistFetcher(fetcherMock);
+    public void testLoadGists() {
         gistManager.setUser(user);
         List<Gist> loadGists = null;
         loadGists = gistManager.loadGists();
-        
+        gistManager.findGist(GIST_ID);
+        gistManager.findGist("2");
         assertEquals(loadGists.size(), 5);
+    }
 
+    @Test
+    public void testLoadGist() throws IOException {
+        gistManager.setUser(user);
+        assertNotNull(gistManager.loadGist(GIST_ID));
+    }
+
+    @Test
+    public void testUpdateGists() {
+        gistManager.setUser(user);
+        assertEquals(testGist, gistManager.updateGist(testGist));
+    }
+
+    @Test
+    public void testDeleteGist() {
+        gistManager.setUser(user);
+        assertTrue(gistManager.deleteGist(GIST_ID));
+    }
+
+    @Test
+    public void testAddNewGist() {
+        gistManager.setUser(user);
+        assertEquals(testGist, gistManager.addNewGist(testGist));
+    }
+
+    @Test
+    public void testDownloadGistFiles() {
+        gistManager.setUser(user);
+        gistManager.loadGists();
+        gistManager.downloadGistFiles("all");
+        gistManager.downloadGistFiles(GIST_ID);
+    }
+
+    @Test
+    public void testWriteGistsToRepository() {
+        gistManager.setUser(user);
+        gistManager.loadGists();
+        gistManager.writeGistsToRepository();
+    }
+
+    @Test
+    public void testLoadAndSaveGists() {
+        gistManager.setUser(user);
+        gistManager.loadAndSaveRemoteGists();
+    }
+
+    @Test
+    public void testGistFetcher() {
+        gistManager.setGistFetcher(fetcherMock);
+        assertEquals(fetcherMock, gistManager.getGistFetcher());
+    }
+
+    @Test
+    public void testRepository() {
+        gistManager.setRepository(repository);
+        assertEquals(repository, gistManager.getRepository());
+    }
+
+    @Test(expectedExceptions = Exception.class)
+    public void testLoadGistsException() throws Exception {
+        when(fetcherMock.loadGists(null)).thenThrow(new RuntimeException());
+        gistManager.setUser(null);
+        gistManager.loadGists();
     }
 
 }

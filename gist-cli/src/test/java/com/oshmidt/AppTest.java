@@ -21,7 +21,9 @@ public class AppTest {
     @Test
     public void testMain() throws Exception {
         App.main(new String[] {"-h"});
+        App.main(new String[] {"-u user -p password -show all"});
         App.main(new String[] {"-l", "-p"});
+        
     }
 }
 

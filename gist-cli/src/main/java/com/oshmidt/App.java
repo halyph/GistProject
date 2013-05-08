@@ -117,9 +117,9 @@ public final class App {
         }
 
         if (cmd.hasOption(DOWNLOAD_FILES_LONG)) {
-            gistManager.downloadGists(cmd.getOptionValue(DOWNLOAD_FILES_LONG));
+            gistManager.downloadGistFiles(cmd.getOptionValue(DOWNLOAD_FILES_LONG));
         } else if (cmd.hasOption(DOWNLOAD_FILES_SHORT)) {
-            gistManager.downloadGists(cmd.getOptionValue(DOWNLOAD_FILES_SHORT));
+            gistManager.downloadGistFiles(cmd.getOptionValue(DOWNLOAD_FILES_SHORT));
         }
 
         if (cmd.hasOption(HELP_SHORT) || (cmd.getOptions().length == 0)) {
