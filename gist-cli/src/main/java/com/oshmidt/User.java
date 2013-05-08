@@ -21,6 +21,8 @@ public class User {
     private String login;
 
     private String password;
+    
+    private Properties prop;
 
     /**
      *Getter for login field.
@@ -68,7 +70,7 @@ public class User {
      *@return boolean success status
      */
     public final boolean importUser(final String filename) {
-        Properties prop = new Properties();
+        prop = new Properties();
         try {
             logger.info(Messages
                     .getString("com.oshmidt.gistManager.tryLoadUserData"));

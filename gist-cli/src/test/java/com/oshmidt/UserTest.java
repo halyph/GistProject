@@ -65,7 +65,7 @@ public class UserTest {
         String file = "wrong.file";
         assertTrue(!user.importUser(file));
     }*/
-    
+   /* 
     @Test
     public void testImportUserFile() throws ClassNotFoundException, 
     			InstantiationException, IllegalAccessException, 
@@ -80,6 +80,6 @@ public class UserTest {
         
         String file = "properties.file";
         assertTrue(user.importUser(file));
-    }
+    }*/
 
 }

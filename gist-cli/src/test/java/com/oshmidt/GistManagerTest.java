@@ -1,7 +1,6 @@
 package com.oshmidt;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -10,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.egit.github.core.Gist;
-
-
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -32,20 +29,15 @@ public class GistManagerTest {
         System.out.println("before block");
 
         gistManager = new GistManager();
-        user = new User();
+     /*   user = new User();
         user.setLogin("login");
-        user.setPassword("password");
-
-        /*
-         * user = mock(User.class); System.out.println("3"); String s = "login";
-         * when(user.getLogin()).thenReturn(s); System.out.println("4");
-         * when(user.getPassword()).thenReturn(null); System.out.println("5");
-         * when(user.importUser()).thenReturn(null); System.out.println("6");
-         */
-        /*
-         * gf = mock(GistFetcher.class); gist = new Gist(); //
-         * gist.setId("test"); when(gf.loadGist("test", user)).thenReturn(gist);
-         */
+        user.setPassword("password");*/
+        
+         user = mock(User.class);
+     //    when(user.getLogin()).thenReturn(s); System.out.println("4");
+   //      when(user.getPassword()).thenReturn(null); System.out.println("5");
+    //     when(user.importUser()).thenReturn(null); System.out.println("6");
+         
     }
 
     @Test
@@ -87,9 +79,10 @@ public class GistManagerTest {
         }
 
         gistManager.setGistFetcher(fetcherMock);
-
+        gistManager.setUser(user);
         List<Gist> loadGists = null;
         loadGists = gistManager.loadGists();
+        
         assertEquals(loadGists.size(), 5);
 
     }

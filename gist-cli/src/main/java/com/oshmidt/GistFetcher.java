@@ -56,7 +56,7 @@ public class GistFetcher {
       * @return list gists
       * @throws IOException
       */
-     public final List<Gist> loadGists(final User user) throws IOException {
+     public List<Gist> loadGists(final User user) throws IOException {
           setClientCredentials(user);
           return service.getGists(user.getLogin());
      }
