@@ -33,4 +33,4 @@ Tests:
 
 Code Coverage:
 =========
-*`mvn cobertura:cobertura` generate code coverage documentation by maven
+* `mvn cobertura:cobertura` generate code coverage documentation by maven
