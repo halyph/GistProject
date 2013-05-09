@@ -1,16 +1,5 @@
 package com.oshmidt;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-
-import org.mockito.Mock;
-import org.testng.annotations.Test;
-
-
 public class ObjectInputStreamFactoryTest {
 	
 	public ObjectInputStreamFactoryTest() {

@@ -85,6 +85,8 @@ public final class App {
      */
     private static Logger logger = Logger.getLogger(App.class);
 
+   
+    private static CommandLine cmd;
     /**
      * Application start point.
      *
@@ -94,17 +96,23 @@ public final class App {
     public static void main(final String[] args) {
         logger.info(Messages.getString("com.oshmidt.cli.aplicationStartOption",
                 StringUtils.convertToString(args, " ")));
-
-        CommandLineParser parser = new PosixParser();
-        CommandLine cmd = null;
-
+        parsingCommands(args);
+        runCommands();
+    }
+    
+    private static void parsingCommands(String[] args) {
+    	CommandLineParser parser = new PosixParser();
+        cmd = null;
         try {
             cmd = parser.parse(initOptions(), args);
         } catch (ParseException e1) {
             logger.error(WRONG_COMMAND + e1);
             System.out.println(WRONG_COMMAND);
             return;
-        }
+        }    	
+    }
+    
+    private static void runCommands() {
         if (cmd.hasOption(USERNAME_SHORT) && cmd.hasOption(PASSWORD_SHORT)) {
             gistManager.initUser(cmd.getOptionValue(USERNAME_SHORT),
                     cmd.getOptionValue(PASSWORD_SHORT));
@@ -132,8 +140,7 @@ public final class App {
             if (cmd.getOptionValue(SHOW_LOCAL_GISTS_LONG).equals(ALL_KEY)) {
                 gistManager.showGists();
             }
-        }
-
+        } 	
     }
 
     /**

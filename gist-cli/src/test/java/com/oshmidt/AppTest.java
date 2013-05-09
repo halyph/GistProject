@@ -10,6 +10,10 @@ import java.lang.reflect.Constructor;
  *Test for App.class
  */
 public class AppTest {
+	
+	public AppTest() {
+		
+	}
 
     @Test
     public void testIsPrivateConstructor() throws Exception {
@@ -22,8 +26,7 @@ public class AppTest {
     public void testMain() throws Exception {
         App.main(new String[] {"-h"});
         App.main(new String[] {"-u user -p password -show all"});
-        App.main(new String[] {"-l", "-p"});
-        
+        App.main(new String[] {"-l"});        
     }
 }
 

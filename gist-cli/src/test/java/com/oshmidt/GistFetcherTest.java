@@ -33,6 +33,12 @@ public class GistFetcherTest {
     
     private List <Gist> list;
     
+    private final int COUNT = 5;
+    
+    public GistFetcherTest() {
+		
+	}
+    
     @BeforeMethod
     public void before() throws IOException {
         user = new User();
@@ -44,7 +50,7 @@ public class GistFetcherTest {
         gist.setDescription(DESCRIPTION);
        
         list = new ArrayList<Gist>();
-    	for (int i = 0; i < 5; i++) {
+    	for (int i = 0; i < COUNT; i++) {
     		list.add(new Gist());
     	}
               

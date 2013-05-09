@@ -20,6 +20,10 @@ public class UserTest {
     private User user;
     
     private Properties prop;
+    
+    public UserTest() {
+    	
+    }
 
     @BeforeMethod
     public void init() {

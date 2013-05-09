@@ -9,6 +9,10 @@ import org.testng.annotations.Test;
  *Tests for StringUtils.class
  */
 public class StringUtilsTest {
+	
+	public StringUtilsTest() {
+		
+	}
 
     @Test
     public void testConvertToString() {

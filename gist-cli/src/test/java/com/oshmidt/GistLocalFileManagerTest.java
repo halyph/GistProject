@@ -1,24 +1,26 @@
 package com.oshmidt;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.egit.github.core.Gist;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
-import org.mockito.internal.matchers.Any;
+import org.eclipse.egit.github.core.GistFile;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -31,6 +33,8 @@ public class GistLocalFileManagerTest {
     
     private File[] files;
     
+    private List <Gist> listGists;
+      
 	public GistLocalFileManagerTest() {
 		
 	}
@@ -48,20 +52,46 @@ public class GistLocalFileManagerTest {
             files[i] = f;
         }
         
-
+        listGists = new ArrayList<Gist>();
+    	for (int i = 0; i < COUNT; i++) {
+    		Gist gist = new Gist();
+    		gist.setDescription(Integer.toString(i));
+    		Map<String, GistFile> map = new TreeMap<String, GistFile>();//new HashMap<String, GistFile>();
+    		for (int j = 0; j < COUNT; j++) {
+    			GistFile gistFile = new GistFile();
+    			gistFile.setFilename(Integer.toString(j));
+    			gistFile.setRawUrl("127.0.0.1");
+    			map.put(Integer.toString(j), gistFile);
+    		}
+    		gist.setFiles(map);
+    		listGists.add(gist);
+    	}
         
+
         Gist gist = mock(Gist.class);
         when(gist.getDescription()).thenReturn("gist");
         
         ObjectInputStream objectInputStream = mock(ObjectInputStream.class);
         
+        FileOutputStream fileOutputStream = mock(FileOutputStream.class);
+        
+        ObjectOutputStream objectOutputStream = mock(ObjectOutputStream.class);
+    //    when(objectOutputStream.equals(anyObject())).thenReturn(true);
+        
         ObjectInputStreamFactory oisf = mock(ObjectInputStreamFactory.class);
         when(oisf.objectInputStreamFactory(any(File.class))).thenReturn(objectInputStream);
         when(oisf.readObject(any(ObjectInputStream.class))).thenReturn(gist);
         
+        FileOutputStreamFactory fosf = mock(FileOutputStreamFactory.class);
+        when(fosf.fileOutputStreamFactory(anyString())).thenReturn(fileOutputStream);
+        
+        ObjectOutputStreamFactory oosf = mock(ObjectOutputStreamFactory.class);
+        when(oosf.objectOutputStreamFactory(any(FileOutputStream.class))).thenReturn(objectOutputStream);
+      //  when(oosf.writeObject(any(ObjectOutputStream.class), anyObject()));
+        
   //      FileInputStream fileInputStreamMock = mock(FileInputStream.class);
         
-        repository = new GistLocalFileManager(oisf);
+        repository = new GistLocalFileManager(oisf, fosf, oosf);
         
     }
 
@@ -84,7 +114,7 @@ public class GistLocalFileManagerTest {
     
     
     @Test
-    public void testReadGists(){
+    public void testReadGists() {
         File file = mock(File.class);
         when(file.exists()).thenReturn(true);
         when(file.getName()).thenReturn("filename.gist");
@@ -98,21 +128,27 @@ public class GistLocalFileManagerTest {
         assertEquals(COUNT, spy.readGists().size());
     }
     
+    
     @Test
     public void testCreateGistFilter() {
     	assertNotNull(repository.createGistFilter());
     }
     
     
+    @Test
+    public void testWriteGists() {
+    	repository.writeGists(listGists);
+    }
     
-
-    
-    
- /*   @Test
-    @Deprecated
-    public void readFiles() {
-        assertNotNull(repository.readFiles());     
-    }*/
+    @Test
+    public void testWriteFiles() {
+        /*List<Gist> list = new ArrayList<Gist>();
+        for (int i = 0; i < 5; i++) {
+            list.add(new Gist());
+        }*/
+        
+    	repository.writeFiles(listGists);
+    }
     
     
    /* @Test

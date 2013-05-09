@@ -2,7 +2,6 @@ package com.oshmidt;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,6 +41,14 @@ public class GistLocalFileManager extends AbstractGistLocalRepository {
     private ObjectInputStream oin;
     
     private ObjectInputStreamFactory objectInputStreamFactory;
+    
+    private FileOutputStream fos;
+    
+    private FileOutputStreamFactory fileOutputStreamFactory;
+    
+    private ObjectOutputStream oos;
+    
+    private ObjectOutputStreamFactory objectOutputStreamFactory;
 
     /** Default path for local repository. */
     private static final String DEFAULT_PATH = "localRepository/";
@@ -58,10 +65,14 @@ public class GistLocalFileManager extends AbstractGistLocalRepository {
 	
 	public GistLocalFileManager() {
 		objectInputStreamFactory = new ObjectInputStreamFactory();	
+		fileOutputStreamFactory = new FileOutputStreamFactory();
+		objectOutputStreamFactory = new ObjectOutputStreamFactory();
 	}
 	
-	public GistLocalFileManager(ObjectInputStreamFactory objectInputStreamFactory) {
+	public GistLocalFileManager(ObjectInputStreamFactory objectInputStreamFactory, FileOutputStreamFactory fileOutputStreamFactory, ObjectOutputStreamFactory objectOutputStreamFactory) {
 		this.objectInputStreamFactory = objectInputStreamFactory;	
+		this.fileOutputStreamFactory = fileOutputStreamFactory;
+		this.objectOutputStreamFactory = objectOutputStreamFactory;
 	}
 	
     /**
@@ -141,7 +152,6 @@ public class GistLocalFileManager extends AbstractGistLocalRepository {
         for (Gist gist : gists) {
             logger.info(gist.getId());
             serializeGist(gist);
-
         }
     }
 
@@ -151,12 +161,12 @@ public class GistLocalFileManager extends AbstractGistLocalRepository {
      */
     private void serializeGist(Gist gist) {
         try {
-            FileOutputStream fos;
+            
             safeMakeDir();
-            fos = new FileOutputStream(getRepoPath() + gist.getId()
-                    + GIST_FILE_EXT);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(gist);
+            fos = fileOutputStreamFactory.fileOutputStreamFactory(getRepoPath() + gist.getId()
+                    + GIST_FILE_EXT);//new FileOutputStream(getRepoPath() + gist.getId()+ GIST_FILE_EXT);
+            oos = objectOutputStreamFactory.objectOutputStreamFactory(fos);
+            objectOutputStreamFactory.writeObject(oos, gist);
             oos.flush();
             oos.close();
         } catch (IOException e) {
@@ -195,10 +205,9 @@ public class GistLocalFileManager extends AbstractGistLocalRepository {
             setRepoPath(getRepoPath() + File.separator + gist.getId()
                     + File.separator);
             safeMakeDir();
-            FileOutputStream fos = new FileOutputStream(new File(getRepoPath(),
+            fos = fileOutputStreamFactory.fileOutputStreamFactory(new File(getRepoPath(),
                     gf.getFilename()));
             fos.getChannel().transferFrom(rbc, 0, 1 << NUM);
-
             fos.close();
             loadDefaultRepoPath();
         } catch (MalformedURLException e) {

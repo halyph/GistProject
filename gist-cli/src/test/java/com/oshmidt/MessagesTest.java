@@ -14,6 +14,10 @@ import org.testng.annotations.Test;
  *Test for Messages.class
  */
 public class MessagesTest {
+	
+	public MessagesTest() {
+		
+	}
 
     @Test
     public void testGetString() {
