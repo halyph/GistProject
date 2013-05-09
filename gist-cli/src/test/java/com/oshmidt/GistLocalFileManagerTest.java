@@ -29,7 +29,8 @@ public class GistLocalFileManagerTest {
 	
     private final int COUNT = 5;
     
-	
+    private File[] files;
+    
 	public GistLocalFileManagerTest() {
 		
 	}
@@ -37,8 +38,30 @@ public class GistLocalFileManagerTest {
     private GistLocalFileManager repository;
     
     @BeforeMethod
-    public void before() {
+    public void before() throws IOException, ClassNotFoundException {
         repository = new GistLocalFileManager();
+        files = new File[COUNT];
+        for (int i = 0; i < COUNT; i++) { 
+            File f = mock(File.class);
+            when(f.isFile()).thenReturn(true);
+            when(f.getName()).thenReturn(Integer.toString(i) + ".gist");
+            files[i] = f;
+        }
+        
+
+        
+        Gist gist = mock(Gist.class);
+        when(gist.getDescription()).thenReturn("gist");
+        
+        ObjectInputStream objectInputStream = mock(ObjectInputStream.class);
+        
+        ObjectInputStreamFactory oisf = mock(ObjectInputStreamFactory.class);
+        when(oisf.objectInputStreamFactory(any(File.class))).thenReturn(objectInputStream);
+        when(oisf.readObject(any(ObjectInputStream.class))).thenReturn(gist);
+        
+  //      FileInputStream fileInputStreamMock = mock(FileInputStream.class);
+        
+        repository = new GistLocalFileManager(oisf);
         
     }
 
@@ -61,61 +84,28 @@ public class GistLocalFileManagerTest {
     
     
     @Test
-    public void testReadGists() throws IOException, ClassNotFoundException {
-      
-        File[] files = new File[COUNT];
-        for (int i = 0; i < COUNT; i++) { 
-            File f = mock(File.class);
-            when(f.isFile()).thenReturn(true);
-            when(f.getName()).thenReturn(Integer.toString(i) + ".gist");
-            files[i] = f;
-        }
-        
+    public void testReadGists(){
         File file = mock(File.class);
         when(file.exists()).thenReturn(true);
         when(file.getName()).thenReturn("filename.gist");
         when(file.listFiles((FileFilter) any())).thenReturn(files);
         
-        Gist gist = mock(Gist.class);
-        when(gist.getDescription()).thenReturn("gist");
-        
-        ObjectInputStream objectInputStream = mock(ObjectInputStream.class);
-        
-        ObjectInputStreamFactory oisf = mock(ObjectInputStreamFactory.class);
-        when(oisf.objectInputStreamFactory(any(File.class))).thenReturn(objectInputStream);
-        when(oisf.readObject(any(ObjectInputStream.class))).thenReturn(gist);
-        
-  //      FileInputStream fileInputStreamMock = mock(FileInputStream.class);
-        
-        repository = new GistLocalFileManager(oisf);
- 
         GistLocalFileManager spy = spy(repository);
 
         when(spy.gistFileFactory(anyString())).thenReturn(file);
       //  when(spy.fileInputStreamFactory(any(File.class))).thenReturn(fileInputStreamMock);
        // when(spy.objectInputStreamFactory((FileInputStream) Matchers.anyObject())).thenReturn(objectInputStreamMock);
-    
-
-        assertEquals(COUNT, spy.readGists().toArray().length);
-
-        
+        assertEquals(COUNT, spy.readGists().size());
     }
     
-/*    public List<Gist> readGists() {
-        ArrayList<Gist> gists = new ArrayList<Gist>();
-        preparePath();
-        gistFolder = new File(getRepoPath());
-        if (!gistFolder.exists()) {
-            return null;
-        }
-        FileFilter filter = createGistFilter();
-        for (File gst : gistFolder.listFiles(filter)) {
-            logger.info(gst.getName());
-            gists.add(deserializeGist(gst));
-        }
-        return gists;
-    }*/
+    @Test
+    public void testCreateGistFilter() {
+    	assertNotNull(repository.createGistFilter());
+    }
     
+    
+    
+
     
     
  /*   @Test

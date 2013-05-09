@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import org.eclipse.egit.github.core.Gist;
-
 public class ObjectInputStreamFactory {
 	
 	public ObjectInputStreamFactory() {
