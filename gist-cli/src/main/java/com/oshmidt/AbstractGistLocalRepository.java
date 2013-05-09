@@ -6,7 +6,7 @@ package com.oshmidt;
  *         Abstract class for gist local repository repository. Created for
  *         generalizing local repositories.
  */
-public abstract class GistLocalRepository implements GistRepository {
+public abstract class AbstractGistLocalRepository implements GistRepository {
     /**Path for local repository. Used through the setter and getter*/
     private String repoPath;
 

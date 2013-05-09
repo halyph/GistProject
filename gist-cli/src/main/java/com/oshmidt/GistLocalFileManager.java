@@ -27,7 +27,7 @@ import org.eclipse.egit.github.core.GistFile;
  *         Class GistLocalRepository implementation. Created for store user data
  *         inside file system.
  */
-public class GistLocalFileManager extends GistLocalRepository {
+public class GistLocalFileManager extends AbstractGistLocalRepository {
 
     private static final String CANT_FOUND = Messages
             .getString("com.oshmidt.gistManager.cantFound");
@@ -40,6 +40,8 @@ public class GistLocalFileManager extends GistLocalRepository {
     private final int NUM = 24;
 
     private ObjectInputStream oin;
+    
+    private ObjectInputStreamFactory objectInputStreamFactory;
 
     /** Default path for local repository. */
     private static final String DEFAULT_PATH = "localRepository/";
@@ -53,10 +55,18 @@ public class GistLocalFileManager extends GistLocalRepository {
      * Logger instance.
      */
     private static Logger logger = Logger.getLogger(GistLocalFileManager.class);
-
+	
+	public GistLocalFileManager() {
+		objectInputStreamFactory = new ObjectInputStreamFactory();	
+	}
+	
+	public GistLocalFileManager(ObjectInputStreamFactory objectInputStreamFactory) {
+		this.objectInputStreamFactory = objectInputStreamFactory;	
+	}
+	
     /**
      * Loading default value for "repoPath". Set default value for
-     * {@link com.oshmidt.GistLocalRepository#repoPath} from
+     * {@link com.oshmidt.AbstractGistLocalRepository#repoPath} from
      * {@link com.oshmidt.GistLocalFileManager#DEFAULT_PATH}.
      */
     public void loadDefaultRepoPath() {
@@ -69,7 +79,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 
     /**
      * GistRepository implementation. Deserialize gists from file system by
-     * {@link com.oshmidt.GistLocalRepository#repoPath}
+     * {@link com.oshmidt.AbstractGistLocalRepository#repoPath}
      * 
      * @return Deserialized gists.
      */
@@ -92,12 +102,6 @@ public class GistLocalFileManager extends GistLocalRepository {
         return gists;
     }
 
-    public ObjectInputStream objectInputStreamFactory(File gst)
-            throws IOException {
-        FileInputStream fis = new FileInputStream(gst);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        return ois;
-    }
 
     /**
      * @param gst
@@ -107,8 +111,8 @@ public class GistLocalFileManager extends GistLocalRepository {
     private Gist deserializeGist(File gst) {
         Gist gist = null;
         try {
-            oin = objectInputStreamFactory(gst);
-            gist = (Gist) oin.readObject();
+            oin = objectInputStreamFactory.objectInputStreamFactory(gst);
+            gist = (Gist) objectInputStreamFactory.readObject(oin);
         } catch (FileNotFoundException e) {
             logger.error(e + CANT_FOUND);
         } catch (IOException e) {
@@ -127,7 +131,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 
     /**
      * GistRepository implementation. Serialize gists into file system to path
-     * {@link com.oshmidt.GistLocalRepository#repoPath}
+     * {@link com.oshmidt.AbstractGistLocalRepository#repoPath}
      * 
      * @param gists
      *            list.
@@ -162,7 +166,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 
     /**
      * GistRepository implementation. Download Gist files to file system path
-     * {@link com.oshmidt.GistLocalRepository#repoPath}
+     * {@link com.oshmidt.AbstractGistLocalRepository#repoPath}
      * 
      * @param gist
      *            - Gist item.
@@ -206,7 +210,7 @@ public class GistLocalFileManager extends GistLocalRepository {
 
     /**
      * Download Gists files to file system path.
-     * {@link com.oshmidt.GistLocalRepository#repoPath}
+     * {@link com.oshmidt.AbstractGistLocalRepository#repoPath}
      * 
      * @param gists
      *            list.

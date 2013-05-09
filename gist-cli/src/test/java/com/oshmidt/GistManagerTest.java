@@ -15,7 +15,11 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+
 public class GistManagerTest {
+	
+	public GistManagerTest() {	
+	}
 
     private GistManager gistManager;
 
@@ -32,7 +36,9 @@ public class GistManagerTest {
     @Mock
     private GistRepository repository;
 
-    List<Gist> arrayList;
+    private List<Gist> arrayList;
+    
+    private final int COUNT = 5;
 
     private static final String GIST_ID = "gistID";
 
@@ -47,7 +53,7 @@ public class GistManagerTest {
         repository = mock(GistRepository.class);
         gistManager.setRepository(repository);
         arrayList = new ArrayList<Gist>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < COUNT; i++) {
             Gist g = mock(Gist.class);
             when(g.getDescription()).thenReturn(Integer.toString(i));
             when(g.getId()).thenReturn(Integer.toString(i));
@@ -96,7 +102,7 @@ public class GistManagerTest {
         loadGists = gistManager.loadGists();
         gistManager.findGist(GIST_ID);
         gistManager.findGist("2");
-        assertEquals(loadGists.size(), 5);
+        assertEquals(loadGists.size(), COUNT);
     }
 
     @Test

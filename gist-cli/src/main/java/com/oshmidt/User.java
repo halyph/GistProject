@@ -13,6 +13,10 @@ import org.apache.log4j.Logger;
  *         Class for saving and keeping user data.
  */
 public class User {
+	
+	public User() {
+		
+	}
 
     private static Logger logger = Logger.getLogger("logfile");
 

@@ -2,8 +2,6 @@ package com.oshmidt;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doReturn;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -28,6 +26,13 @@ import org.testng.annotations.Test;
  * @author oshmidt Test for GistLocalFileManager.class
  */
 public class GistLocalFileManagerTest {
+	
+    private final int COUNT = 5;
+    
+	
+	public GistLocalFileManagerTest() {
+		
+	}
     
     private GistLocalFileManager repository;
     
@@ -56,11 +61,10 @@ public class GistLocalFileManagerTest {
     
     
     @Test
-    public void testReadGists() throws IOException {
-       // repository.readGists();
-       // List<File> fileList = new ArrayList<File>();
-        File[] files = new File[5];
-        for (int i = 0; i < 5; i++) { 
+    public void testReadGists() throws IOException, ClassNotFoundException {
+      
+        File[] files = new File[COUNT];
+        for (int i = 0; i < COUNT; i++) { 
             File f = mock(File.class);
             when(f.isFile()).thenReturn(true);
             when(f.getName()).thenReturn(Integer.toString(i) + ".gist");
@@ -72,26 +76,28 @@ public class GistLocalFileManagerTest {
         when(file.getName()).thenReturn("filename.gist");
         when(file.listFiles((FileFilter) any())).thenReturn(files);
         
+        Gist gist = mock(Gist.class);
+        when(gist.getDescription()).thenReturn("gist");
         
-        FileInputStream fileInputStreamMock = mock(FileInputStream.class);
+        ObjectInputStream objectInputStream = mock(ObjectInputStream.class);
         
-        ObjectInputStream objectInputStreamMock = mock(ObjectInputStream.class);
+        ObjectInputStreamFactory oisf = mock(ObjectInputStreamFactory.class);
+        when(oisf.objectInputStreamFactory(any(File.class))).thenReturn(objectInputStream);
+        when(oisf.readObject(any(ObjectInputStream.class))).thenReturn(gist);
         
-        System.out.println("1111!!!!!!!!!!!!!!!!!!!!!!!!!!"  + file.getName());
-       
+  //      FileInputStream fileInputStreamMock = mock(FileInputStream.class);
+        
+        repository = new GistLocalFileManager(oisf);
+ 
         GistLocalFileManager spy = spy(repository);
-        
-     
-   //     Gist g = mock(Gist.class);
-        
+
         when(spy.gistFileFactory(anyString())).thenReturn(file);
       //  when(spy.fileInputStreamFactory(any(File.class))).thenReturn(fileInputStreamMock);
        // when(spy.objectInputStreamFactory((FileInputStream) Matchers.anyObject())).thenReturn(objectInputStreamMock);
     
-        
-    //    when(spy.deserializeGist(any(File.class))).thenReturn(g);
-        System.out.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!" + spy.readGists());
+
+        assertEquals(COUNT, spy.readGists().toArray().length);
+
         
     }
     
