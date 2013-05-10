@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
  */
 public final class Messages {
     private static final String BUNDLE_NAME = "GistMessages";
+    private static final String COMMAND_BUNDLE_NAME = "commandLine";
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
             .getBundle(BUNDLE_NAME);
 
@@ -31,6 +32,24 @@ public final class Messages {
     public static String getString(final String key) {
         try {
             return RESOURCE_BUNDLE.getString(key);
+        } catch (MissingResourceException e) {
+            return '!' + key + '!';
+        }
+    }
+    
+    
+    
+    /**
+     *Method return command by her bundle from bundle resource file.
+     *{@link com.oshmidt.Messages#COMMAND_BUNDLE_NAME}
+     *
+     *@param key
+     *           - key value
+     *@return string - command
+     */
+    public static String getCommand(final String key) {
+        try {
+            return ResourceBundle.getBundle(COMMAND_BUNDLE_NAME).getString(key);
         } catch (MissingResourceException e) {
             return '!' + key + '!';
         }

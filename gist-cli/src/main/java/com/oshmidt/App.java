@@ -21,59 +21,58 @@ public final class App {
     }
 
     private static final String HELP_SHORT = Messages
-            .getString("com.oshmidt.cli.short.help");
+            .getCommand("Commands.short.help");
     private static final String HELP_LONG = Messages
-            .getString("com.oshmidt.cli.long.help");
+            .getCommand("Commands.long.help");
     private static final String HELP_DESCRIPTION = Messages
-            .getString("com.oshmidt.cli.description.help");
+            .getCommand("Commands.description.help");
 
     private static final String ALL_KEY = Messages
-            .getString("com.oshmidt.cli.allKey");
+            .getCommand("Commands.allKey");
 
     private static final String USERNAME_SHORT = Messages
-            .getString("com.oshmidt.cli.short.username");
+            .getCommand("Commands.short.username");
     private static final String USERNAME_DESCRIPTION = Messages
-            .getString("com.oshmidt.cli.description.username");
+            .getCommand("Commands.description.username");
 
     private static final String PASSWORD_SHORT = Messages
-            .getString("com.oshmidt.cli.short.password");
+            .getCommand("Commands.short.password");
     private static final String PASSWORD_DESCRIPTION = Messages
-            .getString("com.oshmidt.cli.description.password");
+            .getCommand("Commands.description.password");
 
     private static final String DOWNLOAD_GISTS_SHORT = Messages
-            .getString("com.oshmidt.cli.short.downloadGists");
+            .getCommand("Commands.short.downloadGists");
     private static final String DOWNLOAD_GISTS_DESCRIPTION = Messages
-            .getString("com.oshmidt.cli.description.downloadGists");
+            .getCommand("Commands.description.downloadGists");
 
     private static final String SHOW_LOCAL_GISTS_LONG = Messages
-            .getString("com.oshmidt.cli.long.showLocalGists");
+            .getCommand("Commands.long.showLocalGists");
     private static final String SHOW_LOCAL_GISTS_DESCRIPTION = Messages
-            .getString("com.oshmidt.cli.description.showLocalGists");
+            .getCommand("Commands.description.showLocalGists");
     
     private static final String USE_LOCAL_GISTS_SHORT = Messages
-            .getString("com.oshmidt.cli.short.useLocalData");
+            .getCommand("Commands.short.useLocalData");
     private static final String USE_LOCAL_GISTS_DESCRIPTION = Messages
-            .getString("com.oshmidt.cli.description.useLocalData");
+            .getCommand("Commands.description.useLocalData");
             
-
     private static final String DOWNLOAD_FILES_LONG = Messages
-            .getString("com.oshmidt.cli.long.downloadFiles");
+            .getCommand("Commands.long.downloadFiles");
     private static final String DOWNLOAD_FILES_SHORT = Messages
-            .getString("com.oshmidt.cli.short.downloadFiles");
+            .getCommand("Commands.short.downloadFiles");
     private static final String DOWNLOAD_FILES_DESCRIPTION = Messages
-            .getString("com.oshmidt.cli.description.downloadFiles");
+            .getCommand("Commands.description.downloadFiles");
 
     private static final String SHORT_DESCRIPTION = Messages
-            .getString("com.oshmidt.cli.short.Description");
+            .getCommand("Commands.short.Description");
 
     private static final String HELP_TITLE = Messages
-            .getString("com.oshmidt.cli.helpTitle");
+            .getCommand("Commands.helpTitle");
 
     private static final String WRONG_COMMAND = Messages
             .getString("com.oshmidt.cli.wrongCommand");
 
     private static final String HELP_DEVELOPED_BY = Messages
-            .getString("com.oshmidt.cli.helpDevelopedBy");
+            .getCommand("Commands.helpDevelopedBy");
 
     /**
      * GistManager instance.

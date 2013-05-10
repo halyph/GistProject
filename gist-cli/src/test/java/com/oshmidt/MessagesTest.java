@@ -21,10 +21,10 @@ public class MessagesTest {
 
     @Test
     public void testGetString() {
-        String key = "com.oshmidt.cli.long.help";
-        ResourceBundle rb = ResourceBundle.getBundle("GistMessages");
+        String key = "Commands.long.help";
+        ResourceBundle rb = ResourceBundle.getBundle("commandLine");
         String value1 = rb.getString(key);
-        String value2 = Messages.getString(key);
+        String value2 = Messages.getCommand(key);
         assertEquals(value1, value2);
     }
 
@@ -32,6 +32,12 @@ public class MessagesTest {
     public void testGetStringInvalidKey() {
         String key = "invalidKey";
         assertNotNull(Messages.getString(key));
+    }
+    
+    @Test
+    public void testGetCommandInvalidKey() {
+        String key = "invalidKey";
+        assertNotNull(Messages.getCommand(key));
     }
 
     @Test
