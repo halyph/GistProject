@@ -1,6 +1,7 @@
 package com.oshmidt;
 
-import static org.junit.Assert.assertTrue;
+
+import static org.testng.Assert.assertTrue;
 import java.lang.reflect.Constructor;
 import org.testng.annotations.Test;
 

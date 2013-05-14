@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" default="build">
 
-	<taskdef resource="checkstyletask.properties" classpath="${checkstyle.jar}" />
+	
 	<property file="build.properties" />
 
 
@@ -17,9 +17,21 @@
 		<mkdir dir="${build.classes}" />
 		<mkdir dir="${runnable.dir}" />
 
-		<javac srcdir="${src.main}/java" destdir="${build.classes}">
+		<!--javac srcdir="${src.main}/java" destdir="${build.classes}">
+			<classpath refid="default.classpath" />
+		</javac-->
+		<javac debug="true" debuglevel="source,lines,vars" destdir="${build.classes}" includeantruntime="false" source="1.5" target="1.5">
+			<src path="src/main/java" />
+			<src path="src/main/resources" />
+			<exclude name="**" />
 			<classpath refid="default.classpath" />
 		</javac>
+		<javac debug="true" debuglevel="source,lines,vars" destdir="${build.classes}" includeantruntime="false" source="1.5" target="1.5">
+			<src path="src/main/java" />
+			<src path="src/test/java" />
+			<classpath refid="default.classpath" />
+		</javac>
+		
 		<copy todir="${build.classes}" overwrite="false">
 			<fileset dir="${src.main}/java">
 				<include name="**/*" />
@@ -30,8 +42,21 @@
 			</fileset>
 		</copy>
 	</target>
+	
+	<path id="cp">
+		<pathelement location="${cobertura.instruments}" />
+		<pathelement location="${build.classes}" />
+
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+
+	</path>
 
 	<target name="build" depends="compile" description="Pack project to jar">
+		<taskdef resource="checkstyletask.properties" classpath="${checkstyle.jar}" />
+		<taskdef name="testng" classpathref="cp" classname="org.testng.TestNGAntTask" />
+
 		<jar destfile="${runnable.dir}/${runnable.file.name}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Main-Class" value="${manifest.main.class}" />
@@ -120,7 +145,14 @@
 		</fileset>
 	</path>
 
-
+	<target name="test" depends="prepare_cobertura">
+		<testng classpathref="cp" >
+			<classfileset dir="${cobertura.instruments}" includes="**/*.class" />
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="cobertura.ser" />
+			<!--xmlfileset dir="." includes="testng.xml" /-->
+		</testng>
+	</target>
+			
 	<target name="prepare_cobertura" depends="build">
 		<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 		<cobertura-instrument todir="${cobertura.instruments}">
@@ -132,7 +164,7 @@
 		</cobertura-instrument>
 	</target>
 
-	<target name="cobertura" depends="prepare_cobertura" description="create code coverage report">
+	<target name="cobertura" depends="test" description="create code coverage report">
 		<cobertura-report format="html" destdir="${cobertura.coveragereport}">
 			<fileset dir="${src.main}">
 				<include name="**/*.java" />

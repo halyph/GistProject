@@ -1,6 +1,6 @@
 package com.oshmidt;
 
-import static org.junit.Assert.assertEquals;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -14,7 +14,9 @@ import org.eclipse.egit.github.core.service.GistService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.junit.Assert.assertNotNull;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertEquals;
+
 
 public class GistFetcherTest {
 

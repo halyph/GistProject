@@ -1,7 +1,8 @@
 package com.oshmidt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertEquals;
+
 
 import java.lang.reflect.Constructor;
 import java.text.MessageFormat;
@@ -54,7 +55,7 @@ public class MessagesTest {
     public void testGetStringWithParametersInvalidKey() {
         String key = "invalidKey";
         int key2 = 2;
-        assertNotNull(Messages.getString(key), key2);
+        assertNotNull(Messages.getString(key), Integer.toString(key2));
     }
 
 
